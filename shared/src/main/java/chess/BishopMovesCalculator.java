@@ -11,13 +11,15 @@ public class BishopMovesCalculator {
         for(int y = 1; y <= 8; y++){
             for(int x = 1; x <= 8; x++){
                 ChessPosition indexPosition = new ChessPosition(x,y);
+                if(indexPosition.equals(position)){ // if the index is at the piece's current position, skip.
+                    break;
+                }
                 if (isBishopPathClearAndDiagonal(position, indexPosition, board)){
                     ChessMove newMove = new ChessMove(position, indexPosition, null);
                     bishopMoves.add(newMove);
                 }
             }
         }
-        //TODO: how to check for pieces in the way and eliminate end positions beyond those pieces?
         return bishopMoves;
     }
 
