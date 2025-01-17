@@ -66,6 +66,10 @@ public class BishopMovesCalculator {
                     }
                 }
             }
+            if(board.getPiece(endPosition) != null && board.getPiece(endPosition).getTeamColor()
+                    .equals(board.getPiece(startPosition).getTeamColor())){
+                pathClear = false;
+            }
             return pathClear;
         } else {
             return false;
