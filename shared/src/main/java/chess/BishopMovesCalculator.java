@@ -2,25 +2,72 @@ package chess;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 
 public class BishopMovesCalculator {
 
     public static Collection<ChessMove> calculateBishopMoves(ChessBoard board, ChessPosition position){
-        ArrayList<ChessPosition> possiblePositions = new ArrayList<ChessPosition>();
-        //traverse the board and find all possible end positions (not accounting for pieces in the way)
+        ArrayList<ChessMove> bishopMoves = new ArrayList<ChessMove>();
+        //traverse the board and find all possible end positions
         for(int y = 1; y <= 8; y++){
             for(int x = 1; x <= 8; x++){
-                int offset = Math.abs(x - position.getColumn());
-                if (offset == Math.abs(y - position.getRow())){
-                    ChessPosition indexPosition = new ChessPosition(x,y);
-                    possiblePositions.add(indexPosition);
+                ChessPosition indexPosition = new ChessPosition(x,y);
+                if (isBishopPathClearAndDiagonal(position, indexPosition, board)){
+                    ChessMove newMove = new ChessMove(position, indexPosition, null);
+                    bishopMoves.add(newMove);
                 }
             }
         }
-
         //TODO: how to check for pieces in the way and eliminate end positions beyond those pieces?
-        return null;
+        return bishopMoves;
+    }
+
+    public static boolean isBishopPathClearAndDiagonal(ChessPosition startPosition, ChessPosition endPosition, ChessBoard board){
+        int absXOffset = Math.abs(endPosition.getColumn() - startPosition.getColumn());
+        int signedXOffset = endPosition.getColumn() - startPosition.getColumn();
+        int signedYOffset = endPosition.getRow() - startPosition.getRow();
+        boolean pathClear = true;
+        if (absXOffset == Math.abs(signedYOffset)) { // if the move is diagonal:
+            if (signedXOffset >= 0 && signedYOffset >= 0){
+                for (int i = 1; i < absXOffset; i++) { // this only checks the going up and to the right diagonal.
+                    int pathX = startPosition.getColumn() + i;
+                    int pathY = startPosition.getRow() + i;
+                    ChessPosition pathwayPosition = new ChessPosition(pathX, pathY);
+                    if (board.getPiece(pathwayPosition) != null) {
+                        pathClear = false;
+                    }
+                }
+            } else if (signedXOffset < 0 && signedYOffset >= 0){
+                for (int i = 1; i < absXOffset; i++) { // this only checks the going up and to the left diagonal.
+                    int pathX = startPosition.getColumn() - i;
+                    int pathY = startPosition.getRow() + i;
+                    ChessPosition pathwayPosition = new ChessPosition(pathX, pathY);
+                    if (board.getPiece(pathwayPosition) != null) {
+                        pathClear = false;
+                    }
+                }
+            } else if (signedXOffset >= 0 && signedYOffset < 0){
+                for (int i = 1; i < absXOffset; i++) { // this only checks the going down and to the right diagonal.
+                    int pathX = startPosition.getColumn() + i;
+                    int pathY = startPosition.getRow() - i;
+                    ChessPosition pathwayPosition = new ChessPosition(pathX, pathY);
+                    if (board.getPiece(pathwayPosition) != null) {
+                        pathClear = false;
+                    }
+                }
+            } else if (signedXOffset < 0 && signedYOffset < 0){
+                for (int i = 1; i < absXOffset; i++) { // this only checks the going down and to the left diagonal.
+                    int pathX = startPosition.getColumn() - i;
+                    int pathY = startPosition.getRow() - i;
+                    ChessPosition pathwayPosition = new ChessPosition(pathX, pathY);
+                    if (board.getPiece(pathwayPosition) != null) {
+                        pathClear = false;
+                    }
+                }
+            }
+            return pathClear;
+        } else {
+            return false;
+        }
     }
 
 }
