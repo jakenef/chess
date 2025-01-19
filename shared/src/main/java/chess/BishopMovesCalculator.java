@@ -4,75 +4,68 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 public class BishopMovesCalculator {
+    ArrayList<ChessMove> bishopMoves = new ArrayList<ChessMove>();
+    ChessBoard board = null;
+    final ChessPosition startPos;
 
-    public static Collection<ChessMove> calculateBishopMoves(ChessBoard board, ChessPosition position){
-        ArrayList<ChessMove> bishopMoves = new ArrayList<ChessMove>();
-        //traverse the board and find all possible end positions
-        for(int y = 1; y <= 8; y++){
-            for(int x = 1; x <= 8; x++){
-                ChessPosition indexPosition = new ChessPosition(x,y);
-                if(indexPosition.equals(position)){ // if the index is at the piece's current position, skip.
-                    break;
-                }
-                if (isBishopPathClearAndDiagonal(position, indexPosition, board)){
-                    ChessMove newMove = new ChessMove(position, indexPosition, null);
-                    bishopMoves.add(newMove);
-                }
-            }
+    public enum Direction{
+        NW(1,-1),
+        NE(1,1),
+        SW(-1,-1),
+        SE(-1,1);
+        public final int x;
+        public final int y;
+        Direction(int x, int y){
+            this.x = x;
+            this.y = y;
         }
+    }
+
+    private BishopMovesCalculator(ChessBoard board, ChessPosition startPos) {
+        this.board = board;
+        this.startPos = startPos;
+    }
+
+    public ArrayList<ChessMove> getBishopMoves() {
         return bishopMoves;
     }
 
-    public static boolean isBishopPathClearAndDiagonal(ChessPosition startPosition, ChessPosition endPosition, ChessBoard board){
-        int absXOffset = Math.abs(endPosition.getColumn() - startPosition.getColumn());
-        int signedXOffset = endPosition.getColumn() - startPosition.getColumn();
-        int signedYOffset = endPosition.getRow() - startPosition.getRow();
-        boolean pathClear = true;
-        if (absXOffset == Math.abs(signedYOffset)) { // if the move is diagonal:
-            if (signedXOffset >= 0 && signedYOffset >= 0){
-                for (int i = 1; i < absXOffset; i++) { // this only checks the going up and to the right diagonal.
-                    int pathX = startPosition.getColumn() + i;
-                    int pathY = startPosition.getRow() + i;
-                    ChessPosition pathwayPosition = new ChessPosition(pathX, pathY);
-                    if (board.getPiece(pathwayPosition) != null) {
-                        pathClear = false;
-                    }
-                }
-            } else if (signedXOffset < 0 && signedYOffset >= 0){
-                for (int i = 1; i < absXOffset; i++) { // this only checks the going up and to the left diagonal.
-                    int pathX = startPosition.getColumn() - i;
-                    int pathY = startPosition.getRow() + i;
-                    ChessPosition pathwayPosition = new ChessPosition(pathX, pathY);
-                    if (board.getPiece(pathwayPosition) != null) {
-                        pathClear = false;
-                    }
-                }
-            } else if (signedXOffset >= 0 && signedYOffset < 0){
-                for (int i = 1; i < absXOffset; i++) { // this only checks the going down and to the right diagonal.
-                    int pathX = startPosition.getColumn() + i;
-                    int pathY = startPosition.getRow() - i;
-                    ChessPosition pathwayPosition = new ChessPosition(pathX, pathY);
-                    if (board.getPiece(pathwayPosition) != null) {
-                        pathClear = false;
-                    }
-                }
-            } else if (signedXOffset < 0 && signedYOffset < 0){
-                for (int i = 1; i < absXOffset; i++) { // this only checks the going down and to the left diagonal.
-                    int pathX = startPosition.getColumn() - i;
-                    int pathY = startPosition.getRow() - i;
-                    ChessPosition pathwayPosition = new ChessPosition(pathX, pathY);
-                    if (board.getPiece(pathwayPosition) != null) {
-                        pathClear = false;
-                    }
-                }
-            }
-            if(board.getPiece(endPosition) != null && board.getPiece(endPosition).getTeamColor()
-                    .equals(board.getPiece(startPosition).getTeamColor())){
-                pathClear = false;
-            }
-            return pathClear;
-        } else {
-            return false;
+    public static Collection<ChessMove> calculateBishopMoves(ChessBoard board, ChessPosition position){
+        //recursively iterate over four paths until blocked
+        BishopMovesCalculator bmc = new BishopMovesCalculator(board, position);
+        bmc.checkPath(position, Direction.NW);
+        bmc.checkPath(position, Direction.NE);
+        bmc.checkPath(position, Direction.SW);
+        bmc.checkPath(position, Direction.SE);
+        return bmc.getBishopMoves();
+    }
+
+    /**
+     * Recursively checks the path in a given direction from a starting position on the chessboard.
+     * Adds valid moves for a bishop to the bishopMoves list.
+     *
+     * @param pathPosition The path position of the bishop.
+     * @param direction The direction to check for valid moves.
+     */
+    private void checkPath(ChessPosition pathPosition, Direction direction){
+        if(pathPosition.getColumn() + direction.x > 8 || pathPosition.getColumn() + direction.x < 1
+                || pathPosition.getRow() + direction.y > 8 || pathPosition.getRow() + direction.y < 1){
+            return; // if next step out of bounds
+        }
+        ChessPosition nextStep = new ChessPosition(pathPosition.getColumn()+direction.x,
+                pathPosition.getRow()+direction.y);
+        if (board.getPiece(nextStep) != null // if the next step is occupied by teammate
+                && board.getPiece(nextStep).getTeamColor().equals(board.getPiece(startPos).getTeamColor())){
+            return;
+        } else if (board.getPiece(nextStep) != null // if the next step is occupied by enemy
+                && !board.getPiece(nextStep).getTeamColor().equals(board.getPiece(startPos).getTeamColor())){
+            ChessMove possibleMove = new ChessMove(startPos, nextStep, null);
+            bishopMoves.add(possibleMove);
+            return;
+        } else { //clear, add to possible moves
+            ChessMove possibleMove = new ChessMove(startPos, nextStep, null);
+            bishopMoves.add(possibleMove);
+            checkPath(nextStep, direction);
         }
     }
 
