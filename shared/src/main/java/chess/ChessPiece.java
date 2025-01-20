@@ -80,7 +80,7 @@ public class ChessPiece {
             case null:
                 return null;
             case KING:
-                break;
+                return KingMovesCalculator.calculateKingMoves(board, myPosition);
             case QUEEN:
                 break;
             case BISHOP:

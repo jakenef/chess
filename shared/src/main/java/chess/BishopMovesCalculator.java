@@ -44,7 +44,7 @@ public class BishopMovesCalculator {
      * Recursively checks the path in a given direction from a starting position on the chessboard.
      * Adds valid moves for a bishop to the bishopMoves list.
      *
-     * @param pathPosition The path position of the bishop.
+     * @param pathPosition The path position of the bishop. (for recursion)
      * @param direction The direction to check for valid moves.
      */
     private void checkPath(ChessPosition pathPosition, Direction direction){
@@ -68,5 +68,4 @@ public class BishopMovesCalculator {
             checkPath(nextStep, direction);
         }
     }
-
 }
