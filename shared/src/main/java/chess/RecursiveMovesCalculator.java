@@ -3,7 +3,7 @@ package chess;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class BishopRookQueenMovesCalculator {
+public class RecursiveMovesCalculator {
     ArrayList<ChessMove> pieceMoves = new ArrayList<>();
     ChessBoard board;
     final ChessPosition startPos;
@@ -25,7 +25,7 @@ public class BishopRookQueenMovesCalculator {
         }
     }
 
-    BishopRookQueenMovesCalculator(ChessBoard board, ChessPosition startPos) {
+    RecursiveMovesCalculator(ChessBoard board, ChessPosition startPos) {
         this.board = board;
         this.startPos = startPos;
     }
@@ -36,7 +36,7 @@ public class BishopRookQueenMovesCalculator {
 
     public static Collection<ChessMove> calculateBishopMoves(ChessBoard board, ChessPosition position){
         //recursively iterate over four paths until blocked
-        BishopRookQueenMovesCalculator bmc = new BishopRookQueenMovesCalculator(board, position);
+        RecursiveMovesCalculator bmc = new RecursiveMovesCalculator(board, position);
         bmc.checkPath(position, Direction.NW);
         bmc.checkPath(position, Direction.NE);
         bmc.checkPath(position, Direction.SW);
@@ -46,24 +46,24 @@ public class BishopRookQueenMovesCalculator {
 
     public static Collection<ChessMove> calculateRookMoves(ChessBoard board, ChessPosition position) {
         //recursively iterate over four paths until blocked
-        BishopRookQueenMovesCalculator rmc = new BishopRookQueenMovesCalculator(board, position);
-        rmc.checkPath(position, BishopRookQueenMovesCalculator.Direction.N);
-        rmc.checkPath(position, BishopRookQueenMovesCalculator.Direction.W);
-        rmc.checkPath(position, BishopRookQueenMovesCalculator.Direction.S);
-        rmc.checkPath(position, BishopRookQueenMovesCalculator.Direction.E);
+        RecursiveMovesCalculator rmc = new RecursiveMovesCalculator(board, position);
+        rmc.checkPath(position, RecursiveMovesCalculator.Direction.N);
+        rmc.checkPath(position, RecursiveMovesCalculator.Direction.W);
+        rmc.checkPath(position, RecursiveMovesCalculator.Direction.S);
+        rmc.checkPath(position, RecursiveMovesCalculator.Direction.E);
         return rmc.getMoves();
     }
 
     public static Collection<ChessMove> calculateQueenMoves(ChessBoard board, ChessPosition position){
-        BishopRookQueenMovesCalculator qmc = new BishopRookQueenMovesCalculator(board, position);
+        RecursiveMovesCalculator qmc = new RecursiveMovesCalculator(board, position);
         qmc.checkPath(position, Direction.NW);
         qmc.checkPath(position, Direction.NE);
         qmc.checkPath(position, Direction.SW);
         qmc.checkPath(position, Direction.SE);
-        qmc.checkPath(position, BishopRookQueenMovesCalculator.Direction.N);
-        qmc.checkPath(position, BishopRookQueenMovesCalculator.Direction.W);
-        qmc.checkPath(position, BishopRookQueenMovesCalculator.Direction.S);
-        qmc.checkPath(position, BishopRookQueenMovesCalculator.Direction.E);
+        qmc.checkPath(position, RecursiveMovesCalculator.Direction.N);
+        qmc.checkPath(position, RecursiveMovesCalculator.Direction.W);
+        qmc.checkPath(position, RecursiveMovesCalculator.Direction.S);
+        qmc.checkPath(position, RecursiveMovesCalculator.Direction.E);
         return qmc.getMoves();
     }
 
@@ -75,17 +75,17 @@ public class BishopRookQueenMovesCalculator {
      * @param direction The direction to check for valid moves.
      */
     public void checkPath(ChessPosition pathPosition, Direction direction){
-        if(pathPosition.getColumn() + direction.x > 8 || pathPosition.getColumn() + direction.x < 1
-                || pathPosition.getRow() + direction.y > 8 || pathPosition.getRow() + direction.y < 1){
+        if(!ChessPosition.isInBounds(pathPosition.getRow() + direction.y,
+                pathPosition.getColumn() + direction.x)){
             return; // if next step out of bounds
         }
         ChessPosition nextStep = new ChessPosition(pathPosition.getRow()+direction.y,
                 pathPosition.getColumn()+direction.x);
         if (board.getPiece(nextStep) != null // if the next step is occupied by teammate
-                && board.getPiece(nextStep).getTeamColor().equals(board.getPiece(startPos).getTeamColor())){
+                && ChessBoard.isSameTeam(board, startPos, nextStep)){
             return;
-        } else if (board.getPiece(nextStep) != null // if the next step is occupied by enemy
-                && !board.getPiece(nextStep).getTeamColor().equals(board.getPiece(startPos).getTeamColor())){
+        } else if (board.getPiece(nextStep) != null && !ChessBoard.isSameTeam(board, startPos, nextStep)){
+            // if the next step is occupied by enemy
             ChessMove possibleMove = new ChessMove(startPos, nextStep, null);
             pieceMoves.add(possibleMove);
             return;

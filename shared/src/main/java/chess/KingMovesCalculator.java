@@ -21,13 +21,13 @@ public class KingMovesCalculator {
         for (int x = 0; x < possibleMoveInt.length; x++){
             for (int y = 0; y < possibleMoveInt.length; y++){
                 // if in bounds of the board
-                if(0 < position.getColumn() + possibleMoveInt[x] && position.getColumn() + possibleMoveInt[x] < 9
-                        && 0 < position.getRow() + possibleMoveInt[y] && position.getRow() + possibleMoveInt[y] < 9){
+                if(ChessPosition.isInBounds(position.getRow() + possibleMoveInt[y],
+                        position.getColumn() + possibleMoveInt[x])){
                     ChessPosition possiblePosition = new ChessPosition(position.getRow() + possibleMoveInt[y],
                             position.getColumn() + possibleMoveInt[x]);
                     ChessMove possibleMove = new ChessMove(position, possiblePosition, null);
-                    if(board.getPiece(possiblePosition) == null || !board.getPiece(possiblePosition).getTeamColor()
-                            .equals(board.getPiece(position).getTeamColor())){
+                    if(board.getPiece(possiblePosition) == null ||
+                            !ChessBoard.isSameTeam(board, position, possiblePosition)){
                         possibleKingMoves.add(possibleMove);
                     }
                 }

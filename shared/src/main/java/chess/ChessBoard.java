@@ -73,6 +73,18 @@ public class ChessBoard {
     }
 
     /**
+     * Checks if two pieces on the chessboard belong to the same team.
+     *
+     * @param board The chessboard containing the pieces.
+     * @param pos1 The position of the first piece.
+     * @param pos2 The position of the second piece.
+     * @return True if both pieces belong to the same team, false otherwise.
+     */
+    public static boolean isSameTeam(ChessBoard board, ChessPosition pos1, ChessPosition pos2){
+        return board.getPiece(pos1).getTeamColor().equals(board.getPiece(pos2).getTeamColor());
+    }
+
+    /**
      * Sets the board to the default starting board
      * (How the game of chess normally starts)
      */

@@ -58,4 +58,8 @@ public class ChessPosition {
     public int getColumn() {
         return col;
     }
+
+    public static boolean isInBounds(int row, int col){
+        return 0 < col && col < 9 && 0 < row && row < 9;
+    }
 }

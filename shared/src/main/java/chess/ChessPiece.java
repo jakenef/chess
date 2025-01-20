@@ -107,13 +107,13 @@ public class ChessPiece {
             case KING:
                 return KingMovesCalculator.calculateKingMoves(board, myPosition);
             case QUEEN:
-                return BishopRookQueenMovesCalculator.calculateQueenMoves(board, myPosition);
+                return RecursiveMovesCalculator.calculateQueenMoves(board, myPosition);
             case BISHOP:
-                return BishopRookQueenMovesCalculator.calculateBishopMoves(board, myPosition);
+                return RecursiveMovesCalculator.calculateBishopMoves(board, myPosition);
             case KNIGHT:
-                break;
+                return KnightMovesCalculator.calculateKnightMoves(board, myPosition);
             case ROOK:
-                return BishopRookQueenMovesCalculator.calculateRookMoves(board, myPosition);
+                return RecursiveMovesCalculator.calculateRookMoves(board, myPosition);
             case PAWN:
                 break;
         }
