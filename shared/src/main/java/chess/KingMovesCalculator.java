@@ -17,14 +17,14 @@ public class KingMovesCalculator {
      * @return A collection of all valid moves for the King from the given position.
      */
     public static Collection<ChessMove> calculateKingMoves(ChessBoard board, ChessPosition position){
-        ArrayList<ChessMove> possibleKingMoves = new ArrayList<ChessMove>();
+        ArrayList<ChessMove> possibleKingMoves = new ArrayList<>();
         for (int x = 0; x < possibleMoveInt.length; x++){
             for (int y = 0; y < possibleMoveInt.length; y++){
                 // if in bounds of the board
                 if(0 < position.getColumn() + possibleMoveInt[x] && position.getColumn() + possibleMoveInt[x] < 9
                         && 0 < position.getRow() + possibleMoveInt[y] && position.getRow() + possibleMoveInt[y] < 9){
-                    ChessPosition possiblePosition = new ChessPosition(position.getColumn() + possibleMoveInt[x],
-                            position.getRow() + possibleMoveInt[y]);
+                    ChessPosition possiblePosition = new ChessPosition(position.getRow() + possibleMoveInt[y],
+                            position.getColumn() + possibleMoveInt[x]);
                     ChessMove possibleMove = new ChessMove(position, possiblePosition, null);
                     if(board.getPiece(possiblePosition) == null || !board.getPiece(possiblePosition).getTeamColor()
                             .equals(board.getPiece(position).getTeamColor())){

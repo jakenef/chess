@@ -13,7 +13,7 @@ public class ChessPosition {
     private final int row;
     private final int col;
 
-    public ChessPosition(int col, int row) {
+    public ChessPosition(int row, int col) {
         if (row <= 8 && col <= 8 && row >= 1 && col >= 1) {
             this.row = row;
             this.col = col;

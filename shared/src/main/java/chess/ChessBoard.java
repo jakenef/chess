@@ -1,6 +1,7 @@
 package chess;
 
 import java.util.Arrays;
+import java.util.Objects;
 
 /**
  * A chessboard that can hold and rearrange chess pieces.
@@ -17,13 +18,37 @@ public class ChessBoard {
 
     @Override
     public String toString() {
-        String boardString = "";
-        for(int i = 1; i <= 8; i++){
-            for(int j = 1; j <= 8; j++){
-                boardString += "-";
+        StringBuilder boardString = new StringBuilder();
+        for(int y = 1; y <= 8; y++){
+            boardString.append("\n").append(9 - y).append(" ");
+            for(int x = 1; x <= 8; x++){
+                ChessPosition position = new ChessPosition(x, y);
+                if (getPiece(position) == null) {
+                    boardString.append("- ");
+                } else {
+                    boardString.append(getPiece(position).getPieceTypeString()).append(" ");
+                }
             }
         }
-        return boardString;
+        boardString.append("\n  ");
+        for(int i = 1; i < 9; i++){
+            boardString.append(i).append(" ");
+        }
+        return boardString + "\n";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        ChessBoard that = (ChessBoard) o;
+        return Objects.deepEquals(board, that.board);
+    }
+
+    @Override
+    public int hashCode() {
+        return Arrays.deepHashCode(board);
     }
 
     /**
@@ -33,7 +58,7 @@ public class ChessBoard {
      * @param piece    the piece to add
      */
     public void addPiece(ChessPosition position, ChessPiece piece) {
-        board[position.getRow()-1][8 - position.getColumn()] = piece;
+        board[position.getRow() - 1][8 - position.getColumn()] = piece;
     }
 
     /**
@@ -44,7 +69,7 @@ public class ChessBoard {
      * position
      */
     public ChessPiece getPiece(ChessPosition position) {
-        return board[position.getRow()-1][8 - position.getColumn()];
+        return board[position.getRow() - 1][8 - position.getColumn()];
     }
 
     /**
@@ -52,6 +77,17 @@ public class ChessBoard {
      * (How the game of chess normally starts)
      */
     public void resetBoard() {
-        throw new RuntimeException("Not implemented");
+        ChessBoard newBoard = new ChessBoard();
+        for (int x = 1; x < 9; x++){ // set up white pawns
+            ChessPosition newPosition = new ChessPosition(x, 2);
+            ChessPiece newPiece = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN);
+            newBoard.addPiece(newPosition, newPiece);
+        }
+        for (int x = 1; x < 9; x++){ // set up black pawns
+            ChessPosition newPosition = new ChessPosition(x, 7);
+            ChessPiece newPiece = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.PAWN);
+            newBoard.addPiece(newPosition, newPiece);
+        }
+        this.board = newBoard.board;
     }
 }

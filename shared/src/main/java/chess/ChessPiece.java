@@ -69,6 +69,31 @@ public class ChessPiece {
     }
 
     /**
+     * @return which type of chess piece this piece is in string format
+     */
+    public String getPieceTypeString() {
+        if(type == PieceType.QUEEN){
+            return "Q";
+        }
+        if(type == PieceType.PAWN){
+            return "P";
+        }
+        if(type == PieceType.KING){
+            return "K";
+        }
+        if(type == PieceType.BISHOP){
+            return "B";
+        }
+        if(type == PieceType.KNIGHT){
+            return "N";
+        }
+        if(type == PieceType.ROOK){
+            return "R";
+        }
+        return null;
+    }
+
+    /**
      * Calculates all the positions a chess piece can move to
      * Does not take into account moves that are illegal due to leaving the king in
      * danger
@@ -82,17 +107,17 @@ public class ChessPiece {
             case KING:
                 return KingMovesCalculator.calculateKingMoves(board, myPosition);
             case QUEEN:
-                break;
+                return BishopRookQueenMovesCalculator.calculateQueenMoves(board, myPosition);
             case BISHOP:
-                return BishopMovesCalculator.calculateBishopMoves(board, myPosition);
+                return BishopRookQueenMovesCalculator.calculateBishopMoves(board, myPosition);
             case KNIGHT:
                 break;
             case ROOK:
-                break;
+                return BishopRookQueenMovesCalculator.calculateRookMoves(board, myPosition);
             case PAWN:
                 break;
         }
-        ArrayList<ChessMove> pMoves = new ArrayList<ChessMove>();
+        ArrayList<ChessMove> pMoves = new ArrayList<>();
         return pMoves;
     }
 }
