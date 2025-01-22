@@ -120,37 +120,46 @@ public class PawnMovesCalculator {
         return possibleMoveList;
     }
 
+    /**
+     * Checks for pawn promotion and adds promotion moves to the list of possible moves.
+     * Considers the promotion to Queen, Rook, Knight, and Bishop.
+     *
+     * @param possibleMoves The collection of possible moves for the pawn.
+     * @param pieceColor The color of the pawn.
+     */
     public static void checkPromotion(Collection<ChessMove> possibleMoves, ChessGame.TeamColor pieceColor){
         ArrayList<ChessMove> addedPromotionMoves = new ArrayList<>();
         for(ChessMove move : possibleMoves){
             if(pieceColor == ChessGame.TeamColor.WHITE){
                 if(move.getEndPosition().getRow() == 8){
-                    move.setPromotionPiece(ChessPiece.PieceType.QUEEN);
-                    ChessMove move2 = new ChessMove(move);
-                    move2.setPromotionPiece(ChessPiece.PieceType.ROOK);
-                    addedPromotionMoves.add(move2);
-                    ChessMove move3 = new ChessMove(move);
-                    move3.setPromotionPiece(ChessPiece.PieceType.KNIGHT);
-                    addedPromotionMoves.add(move3);
-                    ChessMove move4 = new ChessMove(move);
-                    move4.setPromotionPiece(ChessPiece.PieceType.BISHOP);
-                    addedPromotionMoves.add(move4);
+                    addPromotionMoves(addedPromotionMoves, move);
                 }
             } else {
                 if(move.getEndPosition().getRow() == 1){
-                    move.setPromotionPiece(ChessPiece.PieceType.QUEEN);
-                    ChessMove move2 = new ChessMove(move);
-                    move2.setPromotionPiece(ChessPiece.PieceType.ROOK);
-                    addedPromotionMoves.add(move2);
-                    ChessMove move3 = new ChessMove(move);
-                    move3.setPromotionPiece(ChessPiece.PieceType.KNIGHT);
-                    addedPromotionMoves.add(move3);
-                    ChessMove move4 = new ChessMove(move);
-                    move4.setPromotionPiece(ChessPiece.PieceType.BISHOP);
-                    addedPromotionMoves.add(move4);
+                    addPromotionMoves(addedPromotionMoves, move);
                 }
             }
         }
         possibleMoves.addAll(addedPromotionMoves);
+    }
+
+    /**
+     * Adds promotion moves to the list of possible moves.
+     * Considers the promotion to Queen, Rook, Knight, and Bishop.
+     *
+     * @param addedPromotionMoves The list to add promotion moves to.
+     * @param move The original move that results in a promotion.
+     */
+    private static void addPromotionMoves(ArrayList<ChessMove> addedPromotionMoves, ChessMove move) {
+        move.setPromotionPiece(ChessPiece.PieceType.QUEEN);
+        ChessMove move2 = new ChessMove(move);
+        move2.setPromotionPiece(ChessPiece.PieceType.ROOK);
+        addedPromotionMoves.add(move2);
+        ChessMove move3 = new ChessMove(move);
+        move3.setPromotionPiece(ChessPiece.PieceType.KNIGHT);
+        addedPromotionMoves.add(move3);
+        ChessMove move4 = new ChessMove(move);
+        move4.setPromotionPiece(ChessPiece.PieceType.BISHOP);
+        addedPromotionMoves.add(move4);
     }
 }
