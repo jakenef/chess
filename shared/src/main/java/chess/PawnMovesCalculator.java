@@ -23,12 +23,6 @@ public class PawnMovesCalculator {
         possibleMoveList.addAll(checkAttackMoves(board, position, pieceColor));
         checkPromotion(possibleMoveList, pieceColor);
         return possibleMoveList;
-
-        //void checkForPromotions(list, team)
-        //switch (team){
-        // black : check if on y=1
-        // white check if on y=8
-        // change accordingly
     }
 
     /**
