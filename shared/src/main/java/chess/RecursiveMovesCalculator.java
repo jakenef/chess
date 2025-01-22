@@ -34,6 +34,14 @@ public class RecursiveMovesCalculator {
         return pieceMoves;
     }
 
+    /**
+     * Calculates all possible moves for a bishop from a given position on the board.
+     * Recursively iterates over four diagonal paths until blocked.
+     *
+     * @param board The chessboard.
+     * @param position The starting position of the bishop.
+     * @return A collection of possible moves for the bishop.
+     */
     public static Collection<ChessMove> calculateBishopMoves(ChessBoard board, ChessPosition position){
         //recursively iterate over four paths until blocked
         RecursiveMovesCalculator bmc = new RecursiveMovesCalculator(board, position);
@@ -44,6 +52,14 @@ public class RecursiveMovesCalculator {
         return bmc.getMoves();
     }
 
+    /**
+     * Calculates all possible moves for a rook from a given position on the board.
+     * Recursively iterates over four straight paths until blocked.
+     *
+     * @param board The chessboard.
+     * @param position The starting position of the rook.
+     * @return A collection of possible moves for the rook.
+     */
     public static Collection<ChessMove> calculateRookMoves(ChessBoard board, ChessPosition position) {
         //recursively iterate over four paths until blocked
         RecursiveMovesCalculator rmc = new RecursiveMovesCalculator(board, position);
@@ -54,6 +70,14 @@ public class RecursiveMovesCalculator {
         return rmc.getMoves();
     }
 
+    /**
+     * Calculates all possible moves for a queen from a given position on the board.
+     * Recursively iterates over all eight possible paths until blocked.
+     *
+     * @param board The chessboard.
+     * @param position The starting position of the queen.
+     * @return A collection of possible moves for the queen.
+     */
     public static Collection<ChessMove> calculateQueenMoves(ChessBoard board, ChessPosition position){
         RecursiveMovesCalculator qmc = new RecursiveMovesCalculator(board, position);
         for(Direction d : Direction.values()) qmc.checkPath(position,d);

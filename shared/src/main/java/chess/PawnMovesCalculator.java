@@ -7,6 +7,15 @@ public class PawnMovesCalculator {
     private static final int[] xMoves = {0, 0, -1, 1};
     private static final int[] yMoves = {1, 2, 1, 1};
 
+    /**
+     * Calculates all possible moves for a pawn from a given position on the board.
+     * Considers normal moves, initial two-step moves, attack moves, and promotions.
+     *
+     * @param board The chessboard.
+     * @param position The starting position of the pawn.
+     * @param pieceColor The color of the pawn.
+     * @return A collection of possible moves for the pawn.
+     */
     public static Collection<ChessMove> calculatePawnMoves(ChessBoard board, ChessPosition position,
                                                            ChessGame.TeamColor pieceColor) {
         ArrayList<ChessMove> possibleMoveList = new ArrayList<>();
@@ -22,6 +31,15 @@ public class PawnMovesCalculator {
         // change accordingly
     }
 
+    /**
+     * Checks and returns all possible attack moves for a pawn from a given position on the board.
+     * Considers the direction of the pawn based on its color.
+     *
+     * @param board The chessboard.
+     * @param position The starting position of the pawn.
+     * @param pieceColor The color of the pawn.
+     * @return A collection of possible attack moves for the pawn.
+     */
     public static Collection<ChessMove> checkAttackMoves(ChessBoard board, ChessPosition position,
                                                          ChessGame.TeamColor pieceColor){
         ArrayList<ChessMove> possibleMoveList = new ArrayList<>();
@@ -54,6 +72,15 @@ public class PawnMovesCalculator {
         return possibleMoveList;
     }
 
+    /**
+     * Checks and returns all possible normal and initial two-step moves for a pawn from a given position on the board.
+     * Considers the direction of the pawn based on its color.
+     *
+     * @param board The chessboard.
+     * @param position The starting position of the pawn.
+     * @param pieceColor The color of the pawn.
+     * @return A collection of possible normal and initial two-step moves for the pawn.
+     */
     public static Collection<ChessMove> checkNormalAndInitialMoves(ChessBoard board, ChessPosition position,
                                                               ChessGame.TeamColor pieceColor){
         ArrayList<ChessMove> possibleMoveList = new ArrayList<>();
