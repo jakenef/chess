@@ -101,23 +101,15 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        switch (this.type) {
-            case null:
-                return null;
-            case KING:
-                return KingMovesCalculator.calculateKingMoves(board, myPosition);
-            case QUEEN:
-                return RecursiveMovesCalculator.calculateQueenMoves(board, myPosition);
-            case BISHOP:
-                return RecursiveMovesCalculator.calculateBishopMoves(board, myPosition);
-            case KNIGHT:
-                return KnightMovesCalculator.calculateKnightMoves(board, myPosition);
-            case ROOK:
-                return RecursiveMovesCalculator.calculateRookMoves(board, myPosition);
-            case PAWN:
-                break;
-        }
-        ArrayList<ChessMove> pMoves = new ArrayList<>();
-        return pMoves;
+        return switch (this.type) {
+            case null -> null;
+            case KING -> KingMovesCalculator.calculateKingMoves(board, myPosition);
+            case QUEEN -> RecursiveMovesCalculator.calculateQueenMoves(board, myPosition);
+            case BISHOP -> RecursiveMovesCalculator.calculateBishopMoves(board, myPosition);
+            case KNIGHT -> KnightMovesCalculator.calculateKnightMoves(board, myPosition);
+            case ROOK -> RecursiveMovesCalculator.calculateRookMoves(board, myPosition);
+            case PAWN -> PawnMovesCalculator.calculatePawnMoves(board, myPosition,
+                    board.getPiece(myPosition).getTeamColor());
+        };
     }
 }

@@ -42,6 +42,12 @@ public class ChessMove {
         return Objects.hash(startPosition, endPosition, promotionPiece);
     }
 
+    public ChessMove(ChessMove other) {
+        this.startPosition = other.startPosition;
+        this.endPosition = other.endPosition;
+        this.promotionPiece = other.promotionPiece;
+    }
+
     /**
      * @return ChessPosition of starting location
      */
@@ -64,5 +70,9 @@ public class ChessMove {
      */
     public ChessPiece.PieceType getPromotionPiece() {
         return promotionPiece;
+    }
+
+    public void setPromotionPiece(ChessPiece.PieceType promotionPiece) {
+        this.promotionPiece = promotionPiece;
     }
 }

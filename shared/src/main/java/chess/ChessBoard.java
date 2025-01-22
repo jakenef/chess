@@ -19,10 +19,10 @@ public class ChessBoard {
     @Override
     public String toString() {
         StringBuilder boardString = new StringBuilder();
-        for(int x = 1; x <= 8; x++){
-            boardString.append("\n").append(9 - x).append(" ");
-            for(int y = 1; y <= 8; y++){
-                ChessPosition position = new ChessPosition(x, y);
+        for(int row = 8; row >= 1; row--){
+            boardString.append("\n").append(row).append(" ");
+            for(int col = 1; col <= 8; col++){
+                ChessPosition position = new ChessPosition(row, col);
                 if (getPiece(position) == null) {
                     boardString.append("- ");
                 } else {

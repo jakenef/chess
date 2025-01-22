@@ -56,14 +56,7 @@ public class RecursiveMovesCalculator {
 
     public static Collection<ChessMove> calculateQueenMoves(ChessBoard board, ChessPosition position){
         RecursiveMovesCalculator qmc = new RecursiveMovesCalculator(board, position);
-        qmc.checkPath(position, Direction.NW);
-        qmc.checkPath(position, Direction.NE);
-        qmc.checkPath(position, Direction.SW);
-        qmc.checkPath(position, Direction.SE);
-        qmc.checkPath(position, RecursiveMovesCalculator.Direction.N);
-        qmc.checkPath(position, RecursiveMovesCalculator.Direction.W);
-        qmc.checkPath(position, RecursiveMovesCalculator.Direction.S);
-        qmc.checkPath(position, RecursiveMovesCalculator.Direction.E);
+        for(Direction d : Direction.values()) qmc.checkPath(position,d);
         return qmc.getMoves();
     }
 
