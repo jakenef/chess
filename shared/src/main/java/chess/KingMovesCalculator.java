@@ -18,16 +18,16 @@ public class KingMovesCalculator {
      */
     public static Collection<ChessMove> calculateKingMoves(ChessBoard board, ChessPosition position){
         ArrayList<ChessMove> possibleKingMoves = new ArrayList<>();
-        for (int x = 0; x < possibleMoveInt.length; x++){
-            for (int y = 0; y < possibleMoveInt.length; y++){
+        for (int i : possibleMoveInt) {
+            for (int j : possibleMoveInt) {
                 // if in bounds of the board
-                if(ChessPosition.isInBounds(position.getRow() + possibleMoveInt[y],
-                        position.getColumn() + possibleMoveInt[x])){
-                    ChessPosition possiblePosition = new ChessPosition(position.getRow() + possibleMoveInt[y],
-                            position.getColumn() + possibleMoveInt[x]);
+                if (ChessPosition.isInBounds(position.getRow() + j,
+                        position.getColumn() + i)) {
+                    ChessPosition possiblePosition = new ChessPosition(position.getRow() + j,
+                            position.getColumn() + i);
                     ChessMove possibleMove = new ChessMove(position, possiblePosition, null);
-                    if(board.getPiece(possiblePosition) == null ||
-                            !ChessBoard.isSameTeam(board, position, possiblePosition)){
+                    if (board.getPiece(possiblePosition) == null ||
+                            ChessBoard.isDifferentTeam(board, position, possiblePosition)) {
                         possibleKingMoves.add(possibleMove);
                     }
                 }

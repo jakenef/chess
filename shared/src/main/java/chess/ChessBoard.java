@@ -80,8 +80,8 @@ public class ChessBoard {
      * @param pos2 The position of the second piece.
      * @return True if both pieces belong to the same team, false otherwise.
      */
-    public static boolean isSameTeam(ChessBoard board, ChessPosition pos1, ChessPosition pos2){
-        return board.getPiece(pos1).getTeamColor().equals(board.getPiece(pos2).getTeamColor());
+    public static boolean isDifferentTeam(ChessBoard board, ChessPosition pos1, ChessPosition pos2){
+        return !board.getPiece(pos1).getTeamColor().equals(board.getPiece(pos2).getTeamColor());
     }
 
     /**
@@ -89,63 +89,40 @@ public class ChessBoard {
      * (How the game of chess normally starts)
      */
     public void resetBoard() {
-        ChessBoard newBoard = new ChessBoard();
-        for (int x = 1; x < 9; x++){ // set up white pawns
-            ChessPosition newPosition = new ChessPosition(2, x);
-            ChessPiece newPiece = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN);
-            newBoard.addPiece(newPosition, newPiece);
-        }
-        for (int x = 1; x < 9; x++){ // set up black pawns
-            ChessPosition newPosition = new ChessPosition(7, x);
-            ChessPiece newPiece = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.PAWN);
-            newBoard.addPiece(newPosition, newPiece);
-        }
-        for (int x = 1; x < 4; x++){ // set up white other pieces
-            ChessPosition leftPos = new ChessPosition(1, x);
-            ChessPosition rightPos = new ChessPosition(1, 9-x);
-            ChessPiece newPiece = null;
-            if (x == 1) {
-                newPiece = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.ROOK);
-            }
-            if (x == 2){
-                newPiece = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.KNIGHT);
-            }
-            if(x == 3){
-                newPiece = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.BISHOP);
-            }
-            newBoard.addPiece(leftPos, newPiece);
-            newBoard.addPiece(rightPos, newPiece);
-        }
-        ChessPiece whiteQueen = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.QUEEN);
-        ChessPiece whiteKing = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.KING);
-        ChessPosition queenSpot = new ChessPosition(1, 4);
-        ChessPosition kingSpot = new ChessPosition(1, 5);
-        newBoard.addPiece(queenSpot, whiteQueen);
-        newBoard.addPiece(kingSpot, whiteKing);
+        ChessBoard rBoard = new ChessBoard();
+        setOneSide(rBoard, 2, 1, ChessGame.TeamColor.WHITE);
+        setOneSide(rBoard, 7, 8, ChessGame.TeamColor.BLACK);
+        this.board = rBoard.board;
+    }
 
-        for (int x = 1; x < 4; x++){ // set up black other pieces
-            ChessPosition leftPos = new ChessPosition(8, x);
-            ChessPosition rightPos = new ChessPosition(8, 9-x);
-            ChessPiece newPiece = null;
-            if (x == 1) {
-                newPiece = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.ROOK);
-            }
-            if (x == 2){
-                newPiece = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.KNIGHT);
-            }
-            if(x == 3){
-                newPiece = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.BISHOP);
-            }
-            newBoard.addPiece(leftPos, newPiece);
-            newBoard.addPiece(rightPos, newPiece);
+    private static void setOneSide(ChessBoard rBoard, int pawnRow, int royalRow, ChessGame.TeamColor team){
+        for (int i = 1; i < 9; i++){
+            ChessPosition nPos = new ChessPosition(pawnRow, i);
+            ChessPiece nPiece = new ChessPiece(team, ChessPiece.PieceType.PAWN);
+            rBoard.addPiece(nPos, nPiece);
         }
-        ChessPiece blackQueen = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.QUEEN);
-        ChessPiece blackKing = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.KING);
-        ChessPosition bQueenSpot = new ChessPosition(8, 4);
-        ChessPosition bKingSpot = new ChessPosition(8, 5);
-        newBoard.addPiece(bQueenSpot, blackQueen);
-        newBoard.addPiece(bKingSpot, blackKing);
-
-        this.board = newBoard.board;
+        for (int i = 1; i < 4; i++){
+            ChessPosition nPos = new ChessPosition(royalRow, i);
+            ChessPosition nPos2 = new ChessPosition(royalRow, 9-i);
+            if(i == 1){
+                ChessPiece nPiece = new ChessPiece(team, ChessPiece.PieceType.ROOK);
+                rBoard.addPiece(nPos, nPiece);
+                rBoard.addPiece(nPos2, nPiece);
+            } else if(i == 2){
+                ChessPiece nPiece = new ChessPiece(team, ChessPiece.PieceType.KNIGHT);
+                rBoard.addPiece(nPos, nPiece);
+                rBoard.addPiece(nPos2, nPiece);
+            } else {
+                ChessPiece nPiece = new ChessPiece(team, ChessPiece.PieceType.BISHOP);
+                rBoard.addPiece(nPos, nPiece);
+                rBoard.addPiece(nPos2, nPiece);
+            }
+        }
+        ChessPosition qPos = new ChessPosition(royalRow, 4);
+        ChessPosition kPos = new ChessPosition(royalRow, 5);
+        ChessPiece kPiece = new ChessPiece(team, ChessPiece.PieceType.KING);
+        ChessPiece qPiece = new ChessPiece(team, ChessPiece.PieceType.QUEEN);
+        rBoard.addPiece(qPos, qPiece);
+        rBoard.addPiece(kPos, kPiece);
     }
 }

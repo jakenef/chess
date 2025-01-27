@@ -88,28 +88,23 @@ public class RecursiveMovesCalculator {
      * Recursively checks the path in a given direction from a starting position on the chessboard.
      * Adds valid moves for a piece to the pieceMoves list.
      *
-     * @param pathPosition The path position of the piece. (for recursion)
+     * @param position The path position of the piece. (for recursion)
      * @param direction The direction to check for valid moves.
      */
-    public void checkPath(ChessPosition pathPosition, Direction direction){
-        if(!ChessPosition.isInBounds(pathPosition.getRow() + direction.y,
-                pathPosition.getColumn() + direction.x)){
-            return; // if next step out of bounds
-        }
-        ChessPosition nextStep = new ChessPosition(pathPosition.getRow()+direction.y,
-                pathPosition.getColumn()+direction.x);
-        if (board.getPiece(nextStep) != null // if the next step is occupied by teammate
-                && ChessBoard.isSameTeam(board, startPos, nextStep)){
-            return;
-        } else if (board.getPiece(nextStep) != null && !ChessBoard.isSameTeam(board, startPos, nextStep)){
-            // if the next step is occupied by enemy
-            ChessMove possibleMove = new ChessMove(startPos, nextStep, null);
-            pieceMoves.add(possibleMove);
-            return;
-        } else { //clear, add to possible moves
-            ChessMove possibleMove = new ChessMove(startPos, nextStep, null);
-            pieceMoves.add(possibleMove);
-            checkPath(nextStep, direction);
+    public void checkPath(ChessPosition position, Direction direction){
+        if(ChessPosition.isInBounds(position.getColumn() + direction.x, position.getRow() + direction.y)){
+            ChessPosition possiblePosition = new ChessPosition(position.getRow() + direction.y,
+                    position.getColumn() + direction.x);
+            if(board.getPiece(possiblePosition) == null){
+                ChessMove newMove = new ChessMove(startPos, possiblePosition, null);
+                pieceMoves.add(newMove);
+                checkPath(possiblePosition, direction);
+                return;
+            }
+            if(ChessBoard.isDifferentTeam(board, startPos, possiblePosition)){
+                ChessMove newMove = new ChessMove(startPos, possiblePosition, null);
+                pieceMoves.add(newMove);
+            }
         }
     }
 }

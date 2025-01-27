@@ -22,7 +22,7 @@ public class KnightMovesCalculator {
                 ChessPosition possiblePosition = new ChessPosition(position.getRow() + yMoves[i],
                         position.getColumn() + xMoves[i]);
                 if(board.getPiece(possiblePosition) == null
-                        || !ChessBoard.isSameTeam(board, position, possiblePosition)){
+                        || ChessBoard.isDifferentTeam(board, position, possiblePosition)){
                     ChessMove possibleMove = new ChessMove(position, possiblePosition, null);
                     possibleMoveList.add(possibleMove);
                 }
