@@ -2,6 +2,7 @@ package chess;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import static chess.ChessBoard.isDifferentTeam;
 
 public class PawnMovesCalculator {
     private static final int[] xMoves = {0, 0, -1, 1};
@@ -58,7 +59,7 @@ public class PawnMovesCalculator {
             ChessPosition possiblePosition = new ChessPosition(position.getRow() + (teamDir * yMoves[3]),
                     position.getColumn() + xMoves[3]);
             if(board.getPiece(possiblePosition) != null
-                    && !board.getPiece(possiblePosition).getTeamColor().equals(pieceColor)){
+                    && isDifferentTeam(board, position, possiblePosition)){
                 ChessMove newMove = new ChessMove(position, possiblePosition, null);
                 possibleMoveList.add(newMove);
             }

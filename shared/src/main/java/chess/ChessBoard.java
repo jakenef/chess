@@ -95,6 +95,14 @@ public class ChessBoard {
         this.board = rBoard.board;
     }
 
+    /**
+     * Sets up one side of the chessboard with pawns and royal pieces.
+     *
+     * @param rBoard The chessboard to set up.
+     * @param pawnRow The row to place the pawns.
+     * @param royalRow The row to place the royal pieces (Rook, Knight, Bishop, Queen, King).
+     * @param team The color of the pieces to place.
+     */
     private static void setOneSide(ChessBoard rBoard, int pawnRow, int royalRow, ChessGame.TeamColor team){
         for (int i = 1; i < 9; i++){
             ChessPosition nPos = new ChessPosition(pawnRow, i);
