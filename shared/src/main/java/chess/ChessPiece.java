@@ -1,6 +1,5 @@
 package chess;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
 
@@ -69,7 +68,7 @@ public class ChessPiece {
     }
 
     /**
-     * @return which type of chess piece this piece is in string format
+     * @return which type of chess piece this piece is in short string format
      */
     public String getPieceTypeString() {
         if(type == PieceType.QUEEN){
