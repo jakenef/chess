@@ -28,6 +28,10 @@ public class ChessPiece {
         this.type = other.type;
     }
 
+    public void setType(PieceType type) {
+        this.type = type;
+    }
+
     /**
      * The various different chess piece options
      */

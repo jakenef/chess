@@ -47,7 +47,10 @@ public class ChessGame {
      */
     public enum TeamColor {
         WHITE,
-        BLACK
+        BLACK;
+        public TeamColor opposite() {
+            return this == BLACK ? WHITE : BLACK;
+        }
     }
 
     /**
@@ -84,10 +87,13 @@ public class ChessGame {
             throw new InvalidMoveException();
         }
         ArrayList<ChessMove> validMoves = getAllValidMoves(movePiece.getTeamColor());
-        assert validMoves != null;
         if(validMoves.contains(move) && teamTurn == movePiece.getTeamColor()){
             board.addPiece(move.getEndPosition(), movePiece);
             board.addPiece(move.getStartPosition(), null);
+            if(move.getPromotionPiece() != null){
+                movePiece.setType(move.getPromotionPiece());
+            }
+            teamTurn = movePiece.getTeamColor().opposite();
         }else{
             throw new InvalidMoveException();
         }
@@ -100,7 +106,12 @@ public class ChessGame {
     }
 
     private ArrayList<ChessMove> getAllValidMoves(TeamColor teamColor) {
-        return null;
+        ArrayList<ChessMove> allValidMovesList = new ArrayList<>();
+        ArrayList<ChessPosition> allTeamPos = board.getAllTeamPositions(teamColor);
+        for(ChessPosition pos : allTeamPos){
+            allValidMovesList.addAll(validMoves(pos));
+        }
+        return allValidMovesList;
     }
 
     /**
@@ -110,12 +121,7 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
-        TeamColor enemyTeam;
-        if (teamColor == TeamColor.BLACK){
-            enemyTeam = TeamColor.WHITE;
-        } else {
-            enemyTeam = TeamColor.BLACK;
-        }
+        TeamColor enemyTeam = teamColor.opposite();
         ArrayList<ChessMove> allTeamMoves = new ArrayList<>(getAllTeamPieceMoves(enemyTeam));
         for(ChessMove move : allTeamMoves){
             if(board.getPiece(move.getEndPosition()) != null
@@ -169,6 +175,12 @@ public class ChessGame {
         return board;
     }
 
+    /**
+     * Checks if a move will result in the current player's king being in check.
+     *
+     * @param move the move to test
+     * @return true if the move does not result in the current player's king being in check, false otherwise
+     */
     public boolean isMoveOutOfCheck(ChessMove move){
         //create new chessGame, copy of this game
         ChessGame testGame = this.clone();
