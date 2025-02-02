@@ -1,6 +1,8 @@
 package chess;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Objects;
 
 /**
@@ -14,6 +16,18 @@ public class ChessBoard {
 
     public ChessBoard() {
         this.board = new ChessPiece[8][8];
+    }
+
+    public ChessBoard clone() {
+        ChessBoard other = new ChessBoard();
+        for (int i = 0; i < 8; i++){
+            for (int j = 0; j < 8; j++){
+                if (board[i][j] != null) {
+                    other.board[i][j] = board[i][j].clone();
+                }
+            }
+        }
+        return other;
     }
 
     @Override
@@ -132,5 +146,24 @@ public class ChessBoard {
         ChessPiece qPiece = new ChessPiece(team, ChessPiece.PieceType.QUEEN);
         rBoard.addPiece(qPos, qPiece);
         rBoard.addPiece(kPos, kPiece);
+    }
+
+    /**
+     * Retrieves all positions on the chessboard occupied by pieces of the specified team color.
+     *
+     * @param team The color of the team whose positions are to be retrieved.
+     * @return A collection of positions occupied by the specified team.
+     */
+    public ArrayList<ChessPosition> getAllTeamPositions(ChessGame.TeamColor team){
+        ArrayList<ChessPosition> teamPositionList = new ArrayList<>();
+        for(int i = 1; i < 9; i++){
+            for(int j = 1; j < 9; j++){
+                ChessPosition iteratorPos = new ChessPosition(i, j);
+                if(getPiece(iteratorPos) != null && getPiece(iteratorPos).getTeamColor() == team){
+                    teamPositionList.add(iteratorPos);
+                }
+            }
+        }
+        return teamPositionList;
     }
 }

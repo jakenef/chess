@@ -19,6 +19,13 @@ public class ChessGame {
         board = new ChessBoard();
     }
 
+    public ChessGame clone(){
+        ChessGame other = new ChessGame();
+        other.board = this.board.clone();
+        other.teamTurn = this.teamTurn;
+        return other;
+    }
+
     /**
      * @return Which team's turn it is
      */
@@ -58,7 +65,7 @@ public class ChessGame {
         ArrayList<ChessMove> pieceMoveList = new ArrayList<>(startPiece.pieceMoves(board, startPosition));
         ArrayList<ChessMove> validMoveList = new ArrayList<>();
         for(ChessMove move : pieceMoveList){
-            if(moveOutOfCheck(move)){
+            if(isMoveOutOfCheck(move)){
                 validMoveList.add(move);
             }
         }
@@ -73,6 +80,9 @@ public class ChessGame {
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
         ChessPiece movePiece = board.getPiece(move.getStartPosition());
+        if(movePiece == null){
+            throw new InvalidMoveException();
+        }
         ArrayList<ChessMove> validMoves = getAllValidMoves(movePiece.getTeamColor());
         assert validMoves != null;
         if(validMoves.contains(move) && teamTurn == movePiece.getTeamColor()){
@@ -81,6 +91,12 @@ public class ChessGame {
         }else{
             throw new InvalidMoveException();
         }
+    }
+
+    public void noValMakeMove(ChessMove move){
+        ChessPiece movePiece = board.getPiece(move.getStartPosition());
+        board.addPiece(move.getEndPosition(), movePiece);
+        board.addPiece(move.getStartPosition(), null);
     }
 
     private ArrayList<ChessMove> getAllValidMoves(TeamColor teamColor) {
@@ -94,7 +110,20 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        TeamColor enemyTeam;
+        if (teamColor == TeamColor.BLACK){
+            enemyTeam = TeamColor.WHITE;
+        } else {
+            enemyTeam = TeamColor.BLACK;
+        }
+        ArrayList<ChessMove> allTeamMoves = new ArrayList<>(getAllTeamPieceMoves(enemyTeam));
+        for(ChessMove move : allTeamMoves){
+            if(board.getPiece(move.getEndPosition()) != null
+                    && board.getPiece(move.getEndPosition()).getPieceType() == ChessPiece.PieceType.KING){
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -105,6 +134,10 @@ public class ChessGame {
      */
     public boolean isInCheckmate(TeamColor teamColor) {
         throw new RuntimeException("Not implemented");
+        //for (every position: team){
+        // addall(validmoves(pos))
+        // if (validMovesList == empty){
+        //return true;
     }
 
     /**
@@ -136,8 +169,27 @@ public class ChessGame {
         return board;
     }
 
-    public boolean moveOutOfCheck(ChessMove move){
+    public boolean isMoveOutOfCheck(ChessMove move){
+        //create new chessGame, copy of this game
+        ChessGame testGame = this.clone();
+        //make move in the new game
+        testGame.noValMakeMove(move);
+        return !testGame.isInCheck(testGame.board.getPiece(move.getEndPosition()).getTeamColor());
+    }
 
-        return true;
+    /**
+     * Gets all possible moves for all pieces of the specified team.
+     *
+     * @param team the team whose moves are to be retrieved
+     * @return a collection of all possible moves for the specified team
+     */
+    public Collection<ChessMove> getAllTeamPieceMoves(TeamColor team){
+        ArrayList<ChessMove> allTeamMoveList = new ArrayList<>();
+        ArrayList<ChessPosition> allTeamPositionList = board.getAllTeamPositions(team);
+        for (ChessPosition pos : allTeamPositionList){
+            ChessPiece iteratorPiece = board.getPiece(pos);
+            allTeamMoveList.addAll(iteratorPiece.pieceMoves(board, pos));
+        }
+        return allTeamMoveList;
     }
 }
