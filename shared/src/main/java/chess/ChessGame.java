@@ -17,6 +17,7 @@ public class ChessGame {
     public ChessGame() {
         teamTurn = TeamColor.WHITE;
         board = new ChessBoard();
+        board.resetBoard();
     }
 
     public ChessGame clone(){
@@ -99,12 +100,25 @@ public class ChessGame {
         }
     }
 
+    /**
+     * Makes a move on the chessboard without validating it.
+     * This method directly updates the board with the given move,
+     * bypassing any checks for move validity or game rules.
+     *
+     * @param move the chess move to perform
+     */
     public void noValMakeMove(ChessMove move){
         ChessPiece movePiece = board.getPiece(move.getStartPosition());
         board.addPiece(move.getEndPosition(), movePiece);
         board.addPiece(move.getStartPosition(), null);
     }
 
+    /**
+     * Retrieves all valid moves for all pieces of the specified team.
+     *
+     * @param teamColor the color of the team whose valid moves are to be retrieved
+     * @return a list of all valid moves for the specified team
+     */
     private ArrayList<ChessMove> getAllValidMoves(TeamColor teamColor) {
         ArrayList<ChessMove> allValidMovesList = new ArrayList<>();
         ArrayList<ChessPosition> allTeamPos = board.getAllTeamPositions(teamColor);
@@ -139,11 +153,16 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        if(teamTurn != teamColor){
+            return false;
+        }
+        ArrayList<ChessPosition> allTeamPos = board.getAllTeamPositions(teamColor);
+        ArrayList<ChessMove> allValidMoves = new ArrayList<>();
         //for (every position: team){
-        // addall(validmoves(pos))
-        // if (validMovesList == empty){
-        //return true;
+        for(ChessPosition pos : allTeamPos){
+            allValidMoves.addAll(validMoves(pos));
+        }
+        return allValidMoves.isEmpty();
     }
 
     /**
@@ -154,7 +173,11 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        if (!isInCheck(teamColor)){
+            return isInCheckmate(teamColor);
+        } else {
+            return false;
+        }
     }
 
     /**

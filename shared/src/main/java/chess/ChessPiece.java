@@ -84,25 +84,31 @@ public class ChessPiece {
      * @return which type of chess piece this piece is in short string format
      */
     public String getPieceTypeString() {
+        String pieceStr = "";
+        if(pieceColor == ChessGame.TeamColor.WHITE){
+            pieceStr += "W";
+        }else{
+            pieceStr += "B";
+        }
         if(type == PieceType.QUEEN){
-            return "Q";
+            pieceStr += "Q";
         }
         if(type == PieceType.PAWN){
-            return "P";
+            pieceStr += "P";
         }
         if(type == PieceType.KING){
-            return "K";
+            pieceStr += "K";
         }
         if(type == PieceType.BISHOP){
-            return "B";
+            pieceStr += "B";
         }
         if(type == PieceType.KNIGHT){
-            return "N";
+            pieceStr += "N";
         }
         if(type == PieceType.ROOK){
-            return "R";
+            pieceStr += "R";
         }
-        return null;
+        return pieceStr;
     }
 
     /**
