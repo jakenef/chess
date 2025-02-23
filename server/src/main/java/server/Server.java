@@ -1,17 +1,32 @@
 package server;
 
-import dataaccess.DataAccessException;
+import dataaccess.MemoryAuthDataAccess;
+import dataaccess.MemoryGameDataAccess;
+import dataaccess.MemoryUserDataAccess;
+import service.ClearService;
 import service.GameService;
 import spark.*;
 
 public class Server {
 
-    private final UserService userService;
-    private final AuthService authService;
+//    private final UserService userService;
+//    private final AuthService authService;
     private final GameService gameService;
-    private final GameHandler gameHandler;
-    private final UserHandler userHandler;
-    private final AuthHandler authHandler;
+//    private final GameHandler gameHandler;
+//    private final UserHandler userHandler;
+//    private final AuthHandler authHandler;
+    private final ClearHandler clearHandler;
+
+    public Server(){
+        MemoryGameDataAccess mGameDA = new MemoryGameDataAccess();
+        MemoryUserDataAccess mUserDA = new MemoryUserDataAccess();
+        MemoryAuthDataAccess mAuthDA = new MemoryAuthDataAccess();
+
+        ClearService clearService = new ClearService(mGameDA, mUserDA, mAuthDA);
+        this.gameService = new GameService();
+
+        this.clearHandler = new ClearHandler(clearService);
+    }
 
     public int run(int desiredPort) {
         Spark.port(desiredPort);
@@ -19,7 +34,7 @@ public class Server {
         Spark.staticFiles.location("web");
 
         // Register your endpoints and handle exceptions here.
-        Spark.delete("/db", this::clear);
+        Spark.delete("/db", clearHandler::handle);
         //This line initializes the server and can be removed once you have a functioning endpoint 
         Spark.init();
 
@@ -30,13 +45,5 @@ public class Server {
     public void stop() {
         Spark.stop();
         Spark.awaitStop();
-    }
-
-    //Handlers
-    private Object clear(Request request, Response response) throws DataAccessException {
-        //don't i do all the gson json stuff here to go from request -> java object? not necessary here?
-        gameService.clear();
-        response.status(200);
-        return "";
     }
 }

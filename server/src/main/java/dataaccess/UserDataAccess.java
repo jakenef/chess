@@ -1,4 +1,5 @@
 package dataaccess;
 
-public class UserDataAccess {
+public interface UserDataAccess {
+    void deleteAllUserData() throws DataAccessException;
 }

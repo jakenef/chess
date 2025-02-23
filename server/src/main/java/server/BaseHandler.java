@@ -1,9 +1,11 @@
 package server;
 
-import org.eclipse.jetty.client.api.Request;
+import dataaccess.DataAccessException;
+import spark.Request;
+import spark.Response;
 
 public abstract class BaseHandler {
-    public abstract String handleRequest(Request request);
+    public abstract String handle(Request request, Response res) throws DataAccessException;
 
 
 }
