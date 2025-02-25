@@ -5,7 +5,7 @@ import spark.Request;
 import spark.Response;
 
 public abstract class BaseHandler {
-    public abstract String handle(Request request, Response res) throws DataAccessException;
+    public abstract Object handle(Request request, Response res) throws DataAccessException;
 
 
 }
