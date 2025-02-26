@@ -1,5 +1,8 @@
 package dataaccess;
 
+import model.UserData;
+
 public interface UserDataAccess {
-    void deleteAllUserData() throws DataAccessException;
+    void deleteAll();
+    void addUser(UserData user) throws DataAccessException;
 }

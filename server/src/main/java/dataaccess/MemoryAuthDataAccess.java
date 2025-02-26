@@ -2,12 +2,17 @@ package dataaccess;
 
 import model.AuthData;
 
-import java.util.HashMap;
+import java.util.UUID;
 
-public class MemoryAuthDataAccess implements AuthDataAccess{
-    private final HashMap<String, AuthData> authDataMap = new HashMap<>();
+public class MemoryAuthDataAccess extends MemoryDataAccess<String, AuthData> implements AuthDataAccess{
 
-    public void deleteAllAuthData(){
-        authDataMap.clear();
+    public AuthData createAuth(String username) throws DataAccessException{
+        if (username == null){
+            throw new DataAccessException("username null");
+        }
+        String authToken = UUID.randomUUID().toString();
+        AuthData newAuth = new AuthData(authToken, username);
+        dataMap.put(authToken, newAuth);
+        return newAuth;
     }
 }

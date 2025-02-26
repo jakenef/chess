@@ -1,6 +1,8 @@
 package dataaccess;
 
-public interface AuthDataAccess {
+import model.AuthData;
 
-    void deleteAllAuthData() throws DataAccessException;
+public interface AuthDataAccess {
+    void deleteAll();
+    AuthData createAuth(String username) throws DataAccessException;
 }
