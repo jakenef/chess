@@ -1,5 +1,7 @@
 package model;
 
+import com.google.gson.Gson;
+
 public class ErrorMessage {
     private String message;
 
@@ -13,5 +15,9 @@ public class ErrorMessage {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public String toJson() {
+        return new Gson().toJson(this);
     }
 }

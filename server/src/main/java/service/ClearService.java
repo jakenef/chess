@@ -7,21 +7,16 @@ import dataaccess.UserDataAccess;
 import model.ClearRequest;
 import model.ClearResult;
 
-public class ClearService {
-    private final GameDataAccess gameDataAccess;
-    private final UserDataAccess userDataAccess;
-    private final AuthDataAccess authDataAccess;
+public class ClearService extends BaseService {
 
     public ClearService(GameDataAccess gameDataAccess, UserDataAccess userDataAccess, AuthDataAccess authDataAccess){
-        this.gameDataAccess = gameDataAccess;
-        this.userDataAccess = userDataAccess;
-        this.authDataAccess = authDataAccess;
+        super(gameDataAccess, userDataAccess, authDataAccess);
     }
 
     public ClearResult clearAll(ClearRequest req) throws DataAccessException {
-        gameDataAccess.deleteAllGameData();
-        userDataAccess.deleteAllUserData();
-        authDataAccess.deleteAllAuthData();
+        gameDataAccess.deleteAll();
+        userDataAccess.deleteAll();
+        authDataAccess.deleteAll();
         return new ClearResult(true);
     }
 }
