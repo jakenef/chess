@@ -1,31 +1,25 @@
 package server;
 
-import dataaccess.MemoryAuthDataAccess;
-import dataaccess.MemoryGameDataAccess;
-import dataaccess.MemoryUserDataAccess;
+import dataaccess.*;
 import service.ClearService;
 import service.GameService;
+import service.UserService;
 import spark.*;
 
 public class Server {
 
-//    private final UserService userService;
-//    private final AuthService authService;
-    private final GameService gameService;
-//    private final GameHandler gameHandler;
-//    private final UserHandler userHandler;
-//    private final AuthHandler authHandler;
+    private final RegisterHandler registerHandler;
     private final ClearHandler clearHandler;
 
     public Server(){
-        MemoryGameDataAccess mGameDA = new MemoryGameDataAccess();
-        MemoryUserDataAccess mUserDA = new MemoryUserDataAccess();
-        MemoryAuthDataAccess mAuthDA = new MemoryAuthDataAccess();
+        GameDataAccess gameDA = DataAccessFactory.createGameDataAccess();
+        UserDataAccess userDA = DataAccessFactory.createUserDataAccess();
+        AuthDataAccess authDA = DataAccessFactory.createAuthDataAccess();
 
-        ClearService clearService = new ClearService(mGameDA, mUserDA, mAuthDA);
-        this.gameService = new GameService();
-
+        ClearService clearService = new ClearService(gameDA, userDA, authDA);
+        UserService userService = new UserService(gameDA, userDA, authDA);
         this.clearHandler = new ClearHandler(clearService);
+        this.registerHandler = new RegisterHandler(userService);
     }
 
     public int run(int desiredPort) {
@@ -35,6 +29,7 @@ public class Server {
 
         // Register your endpoints and handle exceptions here.
         Spark.delete("/db", clearHandler::handle);
+        Spark.post("/user", registerHandler::handle);
         //This line initializes the server and can be removed once you have a functioning endpoint 
 
         Spark.awaitInitialization();

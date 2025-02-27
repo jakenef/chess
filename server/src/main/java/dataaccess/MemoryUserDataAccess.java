@@ -6,7 +6,7 @@ public class MemoryUserDataAccess extends MemoryDataAccess<String, UserData> imp
 
     public void addUser(UserData user) throws DataAccessException {
         if (dataMap.containsKey(user.username())) {
-            throw new DataAccessException("already taken");
+            throw new DataAccessException("username already taken");
         }
         dataMap.put(user.username(), user);
     }

@@ -21,8 +21,4 @@ public abstract class BaseService {
         //return authDataAccess.getAuth(authToken) != null;
         return false;
     }
-
-    protected String toJson(Object obj) {
-        return new Gson().toJson(obj);
-    }
 }
