@@ -1,6 +1,8 @@
 package service;
 
 import dataaccess.*;
+import model.LoginRequest;
+import model.LoginResult;
 import model.RegisterRequest;
 import model.RegisterResult;
 import org.junit.jupiter.api.BeforeEach;
@@ -37,5 +39,21 @@ class UserServiceTest {
         userService.register(req);
         RegisterRequest req2 = new RegisterRequest("testName", "testPassword", "test@t.com");
         assertThrows(DataAccessException.class, ()-> userService.register(req2));
+    }
+
+    @Test
+    void loginPositive() throws DataAccessException {
+        RegisterRequest regReq = new RegisterRequest("testName", "testPassword", "test@t.com");
+        userService.register(regReq);
+        LoginRequest logReq = new LoginRequest("testName", "testPassword");
+        LoginResult res = userService.login(logReq);
+        assertEquals("testName", res.username());
+        assertFalse(res.authToken().isEmpty());
+    }
+
+    @Test
+    void loginNegative() {
+        LoginRequest logReq = new LoginRequest("testName", "testPassword");
+        assertThrows(DataAccessException.class, ()-> userService.login(logReq));
     }
 }

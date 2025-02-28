@@ -2,7 +2,6 @@ package server;
 
 import dataaccess.*;
 import service.ClearService;
-import service.GameService;
 import service.UserService;
 import spark.*;
 
@@ -10,6 +9,7 @@ public class Server {
 
     private final RegisterHandler registerHandler;
     private final ClearHandler clearHandler;
+    private final LoginHandler loginHandler;
 
     public Server(){
         GameDataAccess gameDA = DataAccessFactory.createGameDataAccess();
@@ -20,6 +20,7 @@ public class Server {
         UserService userService = new UserService(gameDA, userDA, authDA);
         this.clearHandler = new ClearHandler(clearService);
         this.registerHandler = new RegisterHandler(userService);
+        this.loginHandler = new LoginHandler(userService);
     }
 
     public int run(int desiredPort) {
@@ -30,6 +31,7 @@ public class Server {
         // Register your endpoints and handle exceptions here.
         Spark.delete("/db", clearHandler::handle);
         Spark.post("/user", registerHandler::handle);
+        Spark.post("/session", loginHandler::handle);
         //This line initializes the server and can be removed once you have a functioning endpoint 
 
         Spark.awaitInitialization();

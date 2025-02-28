@@ -2,13 +2,12 @@ package server;
 
 import dataaccess.DataAccessException;
 import model.ClearRequest;
-import model.ClearResult;
 import model.ErrorMessage;
 import service.ClearService;
 import spark.Request;
 import spark.Response;
 
-public class ClearHandler {
+public class ClearHandler implements BaseHandler {
 
     private final ClearService clearService;
 
@@ -16,16 +15,16 @@ public class ClearHandler {
         this.clearService = clearService;
     }
 
-    public Object handle(Request request, Response res) throws DataAccessException {
+    public Object handle(Request request, Response res) {
         ClearRequest req = new ClearRequest();
-        ClearResult result = clearService.clearAll(req);
-        if(result.success()){
-            res.status(200);
-            return "{}";
-        } else {
+        try {
+            clearService.clearAll(req);
+        } catch (DataAccessException e) {
             res.status(500);
-            ErrorMessage errMsg = new ErrorMessage("(description of error)");
+            ErrorMessage errMsg = new ErrorMessage(e.getMessage());
             return errMsg.toJson();
         }
+        res.status(200);
+        return "{}";
     }
 }

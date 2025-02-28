@@ -20,7 +20,7 @@ public class RegisterHandler implements BaseHandler {
         this.userService = userService;
     }
 
-    public Object handle(Request req, Response res) throws DataAccessException{
+    public Object handle(Request req, Response res) {
         RegisterResult regResult;
         RegisterRequest regReq = new Gson().fromJson(req.body(), RegisterRequest.class);
 
