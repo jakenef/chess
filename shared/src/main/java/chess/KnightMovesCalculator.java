@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 public class KnightMovesCalculator {
-    private static final int[] xMoves = {-2, -2, -1, -1, 1, 1, 2, 2};
-    private static final int[] yMoves = {-1, 1, -2, 2, -2, 2, -1, 1};
+    private static final int[] X_MOVES = {-2, -2, -1, -1, 1, 1, 2, 2};
+    private static final int[] Y_MOVES = {-1, 1, -2, 2, -2, 2, -1, 1};
 
     /**
      * Calculates all possible moves for a knight from a given position on the board.
@@ -18,9 +18,9 @@ public class KnightMovesCalculator {
     public static Collection<ChessMove> calculateKnightMoves(ChessBoard board, ChessPosition position){
         ArrayList<ChessMove> possibleMoveList = new ArrayList<>();
         for (int i = 0; i < 8; i++){
-            if(ChessPosition.isInBounds(position.getRow() + yMoves[i], position.getColumn() + xMoves[i])){
-                ChessPosition possiblePosition = new ChessPosition(position.getRow() + yMoves[i],
-                        position.getColumn() + xMoves[i]);
+            if(ChessPosition.isInBounds(position.getRow() + Y_MOVES[i], position.getColumn() + X_MOVES[i])){
+                ChessPosition possiblePosition = new ChessPosition(position.getRow() + Y_MOVES[i],
+                        position.getColumn() + X_MOVES[i]);
                 if(board.getPiece(possiblePosition) == null
                         || ChessBoard.isDifferentTeam(board, position, possiblePosition)){
                     ChessMove possibleMove = new ChessMove(position, possiblePosition, null);

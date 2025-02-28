@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 public class KingMovesCalculator {
-    private static final int[] possibleMoveInt = new int[]{-1, 0, 1};
+    private static final int[] POSSIBLE_MOVE_INT = new int[]{-1, 0, 1};
 
     /**
      * Calculates all possible moves for a King from a given position on the chessboard.
@@ -18,8 +18,8 @@ public class KingMovesCalculator {
      */
     public static Collection<ChessMove> calculateKingMoves(ChessBoard board, ChessPosition position){
         ArrayList<ChessMove> possibleKingMoves = new ArrayList<>();
-        for (int i : possibleMoveInt) {
-            for (int j : possibleMoveInt) {
+        for (int i : POSSIBLE_MOVE_INT) {
+            for (int j : POSSIBLE_MOVE_INT) {
                 // if in bounds of the board
                 if (ChessPosition.isInBounds(position.getRow() + j,
                         position.getColumn() + i)) {

@@ -5,8 +5,8 @@ import java.util.Collection;
 import static chess.ChessBoard.isDifferentTeam;
 
 public class PawnMovesCalculator {
-    private static final int[] xMoves = {0, 0, -1, 1};
-    private static final int[] yMoves = {1, 2, 1, 1};
+    private static final int[] X_MOVES = {0, 0, -1, 1};
+    private static final int[] Y_MOVES = {1, 2, 1, 1};
 
     /**
      * Calculates all possible moves for a pawn from a given position on the board.
@@ -43,10 +43,10 @@ public class PawnMovesCalculator {
             teamDir = -1;
         }
         // first, check the attack West move
-        if (ChessPosition.isInBounds(position.getRow() + (teamDir * yMoves[2]),
-                position.getColumn() + xMoves[2])){
-            ChessPosition possiblePosition = new ChessPosition(position.getRow() + (teamDir * yMoves[2]),
-                    position.getColumn() + xMoves[2]);
+        if (ChessPosition.isInBounds(position.getRow() + (teamDir * Y_MOVES[2]),
+                position.getColumn() + X_MOVES[2])){
+            ChessPosition possiblePosition = new ChessPosition(position.getRow() + (teamDir * Y_MOVES[2]),
+                    position.getColumn() + X_MOVES[2]);
             if(board.getPiece(possiblePosition) != null
                     && !board.getPiece(possiblePosition).getTeamColor().equals(pieceColor)){
                 ChessMove newMove = new ChessMove(position, possiblePosition, null);
@@ -54,10 +54,10 @@ public class PawnMovesCalculator {
             }
         }
         // next, check the attack East move
-        if (ChessPosition.isInBounds(position.getRow() + (teamDir * yMoves[3]),
-                position.getColumn() + xMoves[3])){
-            ChessPosition possiblePosition = new ChessPosition(position.getRow() + (teamDir * yMoves[3]),
-                    position.getColumn() + xMoves[3]);
+        if (ChessPosition.isInBounds(position.getRow() + (teamDir * Y_MOVES[3]),
+                position.getColumn() + X_MOVES[3])){
+            ChessPosition possiblePosition = new ChessPosition(position.getRow() + (teamDir * Y_MOVES[3]),
+                    position.getColumn() + X_MOVES[3]);
             if(board.getPiece(possiblePosition) != null
                     && isDifferentTeam(board, position, possiblePosition)){
                 ChessMove newMove = new ChessMove(position, possiblePosition, null);
@@ -85,10 +85,10 @@ public class PawnMovesCalculator {
         }
         boolean normalMove = false;
         //first, check normal move
-        if (ChessPosition.isInBounds(position.getRow() + (teamDir * yMoves[0]),
-                position.getColumn() + xMoves[0])){
-            ChessPosition possiblePosition = new ChessPosition(position.getRow() + (teamDir * yMoves[0]),
-                    position.getColumn() + xMoves[0]);
+        if (ChessPosition.isInBounds(position.getRow() + (teamDir * Y_MOVES[0]),
+                position.getColumn() + X_MOVES[0])){
+            ChessPosition possiblePosition = new ChessPosition(position.getRow() + (teamDir * Y_MOVES[0]),
+                    position.getColumn() + X_MOVES[0]);
             if(board.getPiece(possiblePosition) == null){
                 normalMove = true;
                 ChessMove newMove = new ChessMove(position, possiblePosition, null);
@@ -96,10 +96,10 @@ public class PawnMovesCalculator {
             }
         }
         //next, check initial two-step move
-        if (ChessPosition.isInBounds(position.getRow() + (teamDir * yMoves[1]),
-                position.getColumn() + xMoves[1])){
-            ChessPosition possiblePosition = new ChessPosition(position.getRow() + (teamDir * yMoves[1]),
-                    position.getColumn() + xMoves[1]);
+        if (ChessPosition.isInBounds(position.getRow() + (teamDir * Y_MOVES[1]),
+                position.getColumn() + X_MOVES[1])){
+            ChessPosition possiblePosition = new ChessPosition(position.getRow() + (teamDir * Y_MOVES[1]),
+                    position.getColumn() + X_MOVES[1]);
             if (pieceColor == ChessGame.TeamColor.WHITE){
                 if(board.getPiece(possiblePosition) == null && position.getRow() == 2 && normalMove){
                     ChessMove newMove = new ChessMove(position, possiblePosition, null);
