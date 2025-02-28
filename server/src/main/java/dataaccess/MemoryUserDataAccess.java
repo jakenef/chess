@@ -10,4 +10,9 @@ public class MemoryUserDataAccess extends MemoryDataAccess<String, UserData> imp
         }
         dataMap.put(user.username(), user);
     }
+
+    public boolean isUser(String username, String password) {
+        return dataMap.containsKey(username)
+                && dataMap.get(username).password().equals(password);
+    }
 }

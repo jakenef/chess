@@ -4,10 +4,7 @@ import dataaccess.AuthDataAccess;
 import dataaccess.DataAccessException;
 import dataaccess.GameDataAccess;
 import dataaccess.UserDataAccess;
-import model.AuthData;
-import model.RegisterRequest;
-import model.RegisterResult;
-import model.UserData;
+import model.*;
 
 public class UserService extends BaseService {
 
@@ -20,5 +17,14 @@ public class UserService extends BaseService {
         userDataAccess.addUser(newUser);
         AuthData auth = authDataAccess.createAuth(req.username());
         return new RegisterResult(newUser.username(), auth.authToken());
+    }
+
+    public LoginResult login(LoginRequest req) throws DataAccessException {
+        boolean isUser = userDataAccess.isUser(req.username(), req.password());
+        if(isUser){
+            AuthData auth = authDataAccess.createAuth(req.username());
+            return new LoginResult(req.username(), auth.authToken());
+        }
+        throw new DataAccessException("unauthorized");
     }
 }
