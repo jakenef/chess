@@ -17,6 +17,6 @@ public class ClearService extends BaseService {
         gameDataAccess.deleteAll();
         userDataAccess.deleteAll();
         authDataAccess.deleteAll();
-        return new ClearResult(true);
+        return new ClearResult();
     }
 }

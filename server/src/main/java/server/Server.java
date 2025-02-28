@@ -10,6 +10,7 @@ public class Server {
     private final RegisterHandler registerHandler;
     private final ClearHandler clearHandler;
     private final LoginHandler loginHandler;
+    private final LogoutHandler logoutHandler;
 
     public Server(){
         GameDataAccess gameDA = DataAccessFactory.createGameDataAccess();
@@ -21,6 +22,7 @@ public class Server {
         this.clearHandler = new ClearHandler(clearService);
         this.registerHandler = new RegisterHandler(userService);
         this.loginHandler = new LoginHandler(userService);
+        this.logoutHandler = new LogoutHandler(userService);
     }
 
     public int run(int desiredPort) {
@@ -32,6 +34,8 @@ public class Server {
         Spark.delete("/db", clearHandler::handle);
         Spark.post("/user", registerHandler::handle);
         Spark.post("/session", loginHandler::handle);
+        Spark.delete("/session", logoutHandler::handle);
+
         //This line initializes the server and can be removed once you have a functioning endpoint 
 
         Spark.awaitInitialization();

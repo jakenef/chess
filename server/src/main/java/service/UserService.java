@@ -20,11 +20,13 @@ public class UserService extends BaseService {
     }
 
     public LoginResult login(LoginRequest req) throws DataAccessException {
-        boolean isUser = userDataAccess.isUser(req.username(), req.password());
-        if(isUser){
-            AuthData auth = authDataAccess.createAuth(req.username());
-            return new LoginResult(req.username(), auth.authToken());
-        }
-        throw new DataAccessException("unauthorized");
+        userDataAccess.getUser(req.username(), req.password());
+        AuthData auth = authDataAccess.createAuth(req.username());
+        return new LoginResult(req.username(), auth.authToken());
+    }
+
+    public LogoutResult logout(LogoutRequest req) throws DataAccessException {
+        authDataAccess.deleteAuth(req.authToken());
+        return new LogoutResult();
     }
 }
