@@ -27,8 +27,11 @@ public class MemoryGameDataAccess extends MemoryDataAccess<Integer, GameData> im
     }
 
     @Override
-    public GameData getGame(int gameID) {
-        return null;
+    public GameData getGame(Integer gameID) throws DataAccessException {
+        if (gameID != null){
+            return dataMap.get(gameID);
+        }
+        throw new DataAccessException("gameID null");
     }
 
 

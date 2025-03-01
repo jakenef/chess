@@ -5,6 +5,8 @@ import dataaccess.DataAccessFactory;
 import dataaccess.auth.AuthDataAccess;
 import dataaccess.game.GameDataAccess;
 import dataaccess.user.UserDataAccess;
+import model.request.CreateGameRequest;
+import model.result.CreateGameResult;
 import model.GameData;
 import model.request.ListGameRequest;
 import model.request.LoginRequest;
@@ -72,11 +74,18 @@ class GameServiceTest {
         try{
             LoginRequest logReq = new LoginRequest("testName", "testPassword");
             LoginResult logRes = userService.login(logReq);
-            ListGameRequest listReq = new ListGameRequest(logRes.authToken());
+            CreateGameRequest creReq = new CreateGameRequest(logRes.authToken(), "testGame");
+            CreateGameResult creRes = gameService.createGame(creReq);
 
-
+            assertNotNull(gameDA.getGame(creRes.gameID()));
         } catch (DataAccessException e){
             fail(e.getMessage());
         }
+    }
+
+    @Test
+    void createGameNegative(){
+        assertThrows(DataAccessException.class, () -> gameService.createGame
+                (new CreateGameRequest("bad", "name")));
     }
 }

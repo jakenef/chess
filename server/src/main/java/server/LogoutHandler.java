@@ -12,11 +12,22 @@ import spark.Response;
 
 import java.util.Objects;
 
-public class LogoutHandler implements BaseHandler{
+public class LogoutHandler extends BaseHandler<LogoutRequest, LogoutResult>{
     private final UserService userService;
 
     public LogoutHandler(UserService userService) {
         this.userService = userService;
+    }
+
+    @Override
+    protected LogoutResult processRequest(LogoutRequest request) throws DataAccessException {
+        return userService.logout(request);
+    }
+
+    @Override
+    protected LogoutRequest parseRequest(Request req) {
+        String authToken = req.headers("authorization");
+        return new LogoutRequest(authToken);
     }
 
     public Object handle(Request req, Response res) {

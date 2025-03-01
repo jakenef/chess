@@ -2,17 +2,12 @@ package server;
 
 import com.google.gson.Gson;
 import dataaccess.DataAccessException;
-import model.utils.ErrorMessage;
-import model.utils.RecordUtils;
 import model.request.RegisterRequest;
 import model.result.RegisterResult;
 import service.UserService;
 import spark.Request;
-import spark.Response;
 
-import java.util.Objects;
-
-public class RegisterHandler implements BaseHandler {
+public class RegisterHandler extends BaseHandler<RegisterRequest, RegisterResult> {
 
     private final UserService userService;
 
@@ -20,31 +15,13 @@ public class RegisterHandler implements BaseHandler {
         this.userService = userService;
     }
 
-    public Object handle(Request req, Response res) {
-        RegisterResult regResult;
-        RegisterRequest regReq = new Gson().fromJson(req.body(), RegisterRequest.class);
+    @Override
+    protected RegisterResult processRequest(RegisterRequest request) throws DataAccessException {
+        return userService.register(request);
+    }
 
-        if (RecordUtils.isNull(regReq)){
-            res.status(400);
-            ErrorMessage errMsg = new ErrorMessage("bad request");
-            return errMsg.toJson();
-        }
-
-        try {
-            regResult = userService.register(regReq);
-        } catch (DataAccessException e) {
-            if(Objects.equals(e.getMessage(), "username already taken")){
-                res.status(403);
-                ErrorMessage errMsg = new ErrorMessage("already taken");
-                return errMsg.toJson();
-            }else{
-                res.status(500);
-                ErrorMessage errMsg = new ErrorMessage("other");
-                return errMsg.toJson();
-            }
-        }
-
-        res.status(200);
-        return new Gson().toJson(regResult);
+    @Override
+    protected RegisterRequest parseRequest(Request req) {
+        return new Gson().fromJson(req.body(), RegisterRequest.class);
     }
 }

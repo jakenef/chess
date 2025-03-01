@@ -4,15 +4,10 @@ import com.google.gson.Gson;
 import dataaccess.DataAccessException;
 import model.request.LoginRequest;
 import model.result.LoginResult;
-import model.utils.ErrorMessage;
-import model.utils.RecordUtils;
 import service.UserService;
 import spark.Request;
-import spark.Response;
 
-import java.util.Objects;
-
-public class LoginHandler implements BaseHandler {
+public class LoginHandler extends BaseHandler<LoginRequest, LoginResult> {
 
     private final UserService userService;
 
@@ -20,31 +15,13 @@ public class LoginHandler implements BaseHandler {
         this.userService = userService;
     }
 
-    public Object handle(Request req, Response res) {
-        LoginResult logResult;
-        LoginRequest logReq = new Gson().fromJson(req.body(), LoginRequest.class);
+    @Override
+    protected LoginResult processRequest(LoginRequest request) throws DataAccessException {
+        return userService.login(request);
+    }
 
-        if (RecordUtils.isNull(logReq)){
-            res.status(400);
-            ErrorMessage errMsg = new ErrorMessage("bad request");
-            return errMsg.toJson();
-        }
-
-        try {
-            logResult = userService.login(logReq);
-        } catch (DataAccessException e) {
-            if(Objects.equals(e.getMessage(), "unauthorized")){
-                res.status(401);
-                ErrorMessage errMsg = new ErrorMessage("unauthorized");
-                return errMsg.toJson();
-            }else{
-                res.status(500);
-                ErrorMessage errMsg = new ErrorMessage(e.getMessage());
-                return errMsg.toJson();
-            }
-        }
-
-        res.status(200);
-        return new Gson().toJson(logResult);
+    @Override
+    protected LoginRequest parseRequest(Request req) {
+        return new Gson().fromJson(req.body(), LoginRequest.class);
     }
 }

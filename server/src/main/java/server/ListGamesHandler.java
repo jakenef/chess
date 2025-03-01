@@ -1,18 +1,12 @@
 package server;
 
-import com.google.gson.Gson;
 import dataaccess.DataAccessException;
 import model.request.ListGameRequest;
 import model.result.ListGameResult;
-import model.utils.ErrorMessage;
-import model.utils.RecordUtils;
 import service.GameService;
 import spark.Request;
-import spark.Response;
 
-import java.util.Objects;
-
-public class ListGamesHandler implements BaseHandler{
+public class ListGamesHandler extends BaseHandler<ListGameRequest, ListGameResult>{
     private final GameService gameService;
 
     public ListGamesHandler(GameService gameService) {
@@ -20,30 +14,13 @@ public class ListGamesHandler implements BaseHandler{
     }
 
     @Override
-    public Object handle(Request req, Response res) {
-        ListGameResult listRes;
-        String authToken = req.headers("authorization");
-        ListGameRequest listReq = new ListGameRequest(authToken);
-        if (RecordUtils.isNull(listReq)){
-            res.status(400);
-            ErrorMessage errMsg = new ErrorMessage("bad request");
-            return errMsg.toJson();
-        }
+    protected ListGameResult processRequest(ListGameRequest request) throws DataAccessException {
+        return gameService.listGames(request);
+    }
 
-        try {
-            listRes = gameService.listGames(listReq);
-        } catch (DataAccessException e) {
-            if(Objects.equals(e.getMessage(), "unauthorized")){
-                res.status(401);
-                ErrorMessage errMsg = new ErrorMessage("unauthorized");
-                return errMsg.toJson();
-            }else{
-                res.status(500);
-                ErrorMessage errMsg = new ErrorMessage(e.getMessage());
-                return errMsg.toJson();
-            }
-        }
-        res.status(200);
-        return new Gson().toJson(listRes);
+    @Override
+    protected ListGameRequest parseRequest(Request req) {
+        String authToken = req.headers("authorization");
+        return new ListGameRequest(authToken);
     }
 }

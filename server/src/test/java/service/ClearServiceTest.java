@@ -29,6 +29,7 @@ class ClearServiceTest {
         try{
             userDA.createUser(new UserData("testUser1", "password1", "test@test.com"));
             userDA.createUser(new UserData("testUser2", "password456", "test2@example.com"));
+            gameDA.createGame("gameName");
             authDA.createAuth("testUser1");
         } catch (DataAccessException e){
             fail("Setup failed: " + e.getMessage());
@@ -38,7 +39,7 @@ class ClearServiceTest {
     @Test
     void clearAll() throws DataAccessException {
         assertFalse(userDA.toString().isEmpty());
-        //assertFalse(gameDA.toString().isEmpty());
+        assertFalse(gameDA.toString().isEmpty());
         assertFalse(authDA.toString().isEmpty());
 
         clearService.clearAll(new ClearRequest());

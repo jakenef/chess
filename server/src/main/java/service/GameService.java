@@ -4,8 +4,9 @@ import dataaccess.DataAccessException;
 import dataaccess.auth.AuthDataAccess;
 import dataaccess.game.GameDataAccess;
 import dataaccess.user.UserDataAccess;
-import model.CreateGameRequest;
-import model.CreateGameResult;
+import model.request.CreateGameRequest;
+import model.result.CreateGameResult;
+import model.GameData;
 import model.request.ListGameRequest;
 import model.result.ListGameResult;
 
@@ -23,7 +24,12 @@ public class GameService extends BaseService {
         }
     }
 
-    public CreateGameResult createGame(CreateGameRequest req) {
-        return null;
+    public CreateGameResult createGame(CreateGameRequest req) throws DataAccessException{
+        if(authDataAccess.isAuthorized(req.authToken())){
+            GameData newGame = gameDataAccess.createGame(req.gameName());
+            return new CreateGameResult(newGame.gameID());
+        } else {
+            throw new DataAccessException("unauthorized");
+        }
     }
 }
