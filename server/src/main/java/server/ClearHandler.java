@@ -7,7 +7,6 @@ import service.ClearService;
 import spark.Request;
 
 public class ClearHandler extends BaseHandler<ClearRequest, ClearResult> {
-
     private final ClearService clearService;
 
     public ClearHandler(ClearService clearService) {
