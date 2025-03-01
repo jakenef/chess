@@ -1,8 +1,8 @@
 package service;
 
-import dataaccess.AuthDataAccess;
-import dataaccess.GameDataAccess;
-import dataaccess.UserDataAccess;
+import dataaccess.auth.AuthDataAccess;
+import dataaccess.game.GameDataAccess;
+import dataaccess.user.UserDataAccess;
 
 public abstract class BaseService {
     protected final GameDataAccess gameDataAccess;

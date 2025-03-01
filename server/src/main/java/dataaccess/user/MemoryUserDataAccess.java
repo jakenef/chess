@@ -1,10 +1,12 @@
-package dataaccess;
+package dataaccess.user;
 
+import dataaccess.DataAccessException;
+import dataaccess.MemoryDataAccess;
 import model.UserData;
 
 public class MemoryUserDataAccess extends MemoryDataAccess<String, UserData> implements UserDataAccess {
 
-    public void addUser(UserData user) throws DataAccessException {
+    public void createUser(UserData user) throws DataAccessException {
         if(user == null || user.username().isEmpty()){
             throw new DataAccessException("username null");
         }

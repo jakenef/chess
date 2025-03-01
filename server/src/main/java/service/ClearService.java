@@ -1,11 +1,11 @@
 package service;
 
-import dataaccess.AuthDataAccess;
+import dataaccess.auth.AuthDataAccess;
 import dataaccess.DataAccessException;
-import dataaccess.GameDataAccess;
-import dataaccess.UserDataAccess;
-import model.ClearRequest;
-import model.ClearResult;
+import dataaccess.game.GameDataAccess;
+import dataaccess.user.UserDataAccess;
+import model.request.ClearRequest;
+import model.result.ClearResult;
 
 public class ClearService extends BaseService {
 

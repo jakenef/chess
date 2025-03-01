@@ -1,7 +1,14 @@
 package service;
 
 import dataaccess.*;
-import model.*;
+import dataaccess.auth.AuthDataAccess;
+import dataaccess.game.GameDataAccess;
+import dataaccess.user.UserDataAccess;
+import model.request.LoginRequest;
+import model.request.LogoutRequest;
+import model.request.RegisterRequest;
+import model.result.LoginResult;
+import model.result.RegisterResult;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -30,7 +37,7 @@ class UserServiceTest {
             assertEquals("testName", res.username());
             assertFalse(res.authToken().isEmpty());
         } catch (DataAccessException e) {
-            fail();
+            fail(e.getMessage());
         }
     }
 
@@ -42,7 +49,7 @@ class UserServiceTest {
             RegisterRequest req2 = new RegisterRequest("testName", "testPassword", "test@t.com");
             assertThrows(DataAccessException.class, ()-> userService.register(req2));
         } catch (DataAccessException e) {
-            fail();
+            fail(e.getMessage());
         }
     }
 
@@ -58,7 +65,7 @@ class UserServiceTest {
             assertFalse(res.authToken().isEmpty());
             assertNotNull(authDA.getAuth(res.authToken()));
         } catch (DataAccessException e) {
-            fail();
+            fail(e.getMessage());
         }
     }
 
@@ -81,7 +88,7 @@ class UserServiceTest {
 
             assertThrows(DataAccessException.class, () -> authDA.getAuth(res.authToken()));
         } catch (DataAccessException e) {
-            fail();
+            fail(e.getMessage());
         }
     }
 
@@ -94,7 +101,7 @@ class UserServiceTest {
             LoginRequest logReq = new LoginRequest("testName", "testPassword");
             userService.login(logReq);
         } catch (DataAccessException e) {
-            fail();
+            fail(e.getMessage());
         }
         assertThrows(DataAccessException.class, () -> userService.logout(outReq));
     }

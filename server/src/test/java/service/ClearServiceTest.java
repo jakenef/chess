@@ -1,7 +1,10 @@
 package service;
 
 import dataaccess.*;
-import model.ClearRequest;
+import dataaccess.auth.AuthDataAccess;
+import dataaccess.game.GameDataAccess;
+import dataaccess.user.UserDataAccess;
+import model.request.ClearRequest;
 import model.UserData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,8 +27,8 @@ class ClearServiceTest {
         clearService = new ClearService(gameDA, userDA, authDA);
 
         try{
-            userDA.addUser(new UserData("testUser1", "password1", "test@test.com"));
-            userDA.addUser(new UserData("testUser2", "password456", "test2@example.com"));
+            userDA.createUser(new UserData("testUser1", "password1", "test@test.com"));
+            userDA.createUser(new UserData("testUser2", "password456", "test2@example.com"));
             authDA.createAuth("testUser1");
         } catch (DataAccessException e){
             fail("Setup failed: " + e.getMessage());

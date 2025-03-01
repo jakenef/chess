@@ -2,36 +2,36 @@ package server;
 
 import com.google.gson.Gson;
 import dataaccess.DataAccessException;
-import model.request.LoginRequest;
-import model.result.LoginResult;
+import model.request.ListGameRequest;
+import model.result.ListGameResult;
 import model.utils.ErrorMessage;
 import model.utils.RecordUtils;
-import service.UserService;
+import service.GameService;
 import spark.Request;
 import spark.Response;
 
 import java.util.Objects;
 
-public class LoginHandler implements BaseHandler {
+public class ListGamesHandler implements BaseHandler{
+    private final GameService gameService;
 
-    private final UserService userService;
-
-    public LoginHandler(UserService userService) {
-        this.userService = userService;
+    public ListGamesHandler(GameService gameService) {
+        this.gameService = gameService;
     }
 
+    @Override
     public Object handle(Request req, Response res) {
-        LoginResult logResult;
-        LoginRequest logReq = new Gson().fromJson(req.body(), LoginRequest.class);
-
-        if (RecordUtils.isNull(logReq)){
+        ListGameResult listRes;
+        String authToken = req.headers("authorization");
+        ListGameRequest listReq = new ListGameRequest(authToken);
+        if (RecordUtils.isNull(listReq)){
             res.status(400);
             ErrorMessage errMsg = new ErrorMessage("bad request");
             return errMsg.toJson();
         }
 
         try {
-            logResult = userService.login(logReq);
+            listRes = gameService.listGames(listReq);
         } catch (DataAccessException e) {
             if(Objects.equals(e.getMessage(), "unauthorized")){
                 res.status(401);
@@ -43,8 +43,7 @@ public class LoginHandler implements BaseHandler {
                 return errMsg.toJson();
             }
         }
-
         res.status(200);
-        return new Gson().toJson(logResult);
+        return new Gson().toJson(listRes);
     }
 }

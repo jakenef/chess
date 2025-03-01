@@ -1,0 +1,82 @@
+package service;
+
+import dataaccess.DataAccessException;
+import dataaccess.DataAccessFactory;
+import dataaccess.auth.AuthDataAccess;
+import dataaccess.game.GameDataAccess;
+import dataaccess.user.UserDataAccess;
+import model.GameData;
+import model.request.ListGameRequest;
+import model.request.LoginRequest;
+import model.request.LogoutRequest;
+import model.request.RegisterRequest;
+import model.result.ListGameResult;
+import model.result.LoginResult;
+import model.result.RegisterResult;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.util.ArrayList;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+class GameServiceTest {
+
+    static GameDataAccess gameDA = DataAccessFactory.createGameDataAccess();
+    static UserDataAccess userDA = DataAccessFactory.createUserDataAccess();
+    static AuthDataAccess authDA = DataAccessFactory.createAuthDataAccess();
+    static GameService gameService = new GameService(gameDA, userDA, authDA);
+    static UserService userService = new UserService(gameDA, userDA, authDA);
+
+    @BeforeEach
+    void setUp() {
+        gameDA = DataAccessFactory.createGameDataAccess();
+        userDA = DataAccessFactory.createUserDataAccess();
+        authDA = DataAccessFactory.createAuthDataAccess();
+        gameService = new GameService(gameDA, userDA, authDA);
+        userService = new UserService(gameDA, userDA, authDA);
+
+        try {
+            RegisterRequest regReq = new RegisterRequest("testName", "testPassword", "test@t.com");
+            RegisterResult res = userService.register(regReq);
+            userService.logout(new LogoutRequest(res.authToken()));
+        } catch (DataAccessException e) {
+            fail("Setup failed: " + e.getMessage());
+        }
+    }
+
+    @Test
+    void listGamesPositive() {
+        try{
+            LoginRequest logReq = new LoginRequest("testName", "testPassword");
+            LoginResult logRes = userService.login(logReq);
+            ListGameRequest listReq = new ListGameRequest(logRes.authToken());
+
+            gameDA.createGame("testGame");
+            ListGameResult listRes = gameService.listGames(listReq);
+            ArrayList<GameData> expected = new ArrayList<>(gameDA.getAllGames());
+
+            assertTrue(expected.containsAll(listRes.games()) && listRes.games().containsAll(expected));
+        } catch (DataAccessException e){
+            fail(e.getMessage());
+        }
+    }
+
+    @Test
+    void listGamesNegative(){
+        assertThrows(DataAccessException.class, () -> gameService.listGames(new ListGameRequest("bad")));
+    }
+
+    @Test
+    void createGamePositive(){
+        try{
+            LoginRequest logReq = new LoginRequest("testName", "testPassword");
+            LoginResult logRes = userService.login(logReq);
+            ListGameRequest listReq = new ListGameRequest(logRes.authToken());
+
+
+        } catch (DataAccessException e){
+            fail(e.getMessage());
+        }
+    }
+}

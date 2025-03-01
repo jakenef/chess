@@ -1,5 +1,6 @@
-package dataaccess;
+package dataaccess.auth;
 
+import dataaccess.DataAccessException;
 import model.AuthData;
 
 public interface AuthDataAccess {
@@ -7,4 +8,5 @@ public interface AuthDataAccess {
     AuthData createAuth(String username) throws DataAccessException;
     void deleteAuth(String authToken) throws DataAccessException;
     AuthData getAuth(String authToken) throws DataAccessException;
+    boolean isAuthorized(String authToken);
 }

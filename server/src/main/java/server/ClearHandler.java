@@ -1,8 +1,8 @@
 package server;
 
 import dataaccess.DataAccessException;
-import model.ClearRequest;
-import model.ErrorMessage;
+import model.request.ClearRequest;
+import model.utils.ErrorMessage;
 import service.ClearService;
 import spark.Request;
 import spark.Response;

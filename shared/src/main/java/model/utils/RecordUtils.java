@@ -1,6 +1,4 @@
-package model;
-
-import com.google.gson.Gson;
+package model.utils;
 
 import java.lang.reflect.Field;
 

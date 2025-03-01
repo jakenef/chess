@@ -2,10 +2,10 @@ package server;
 
 import com.google.gson.Gson;
 import dataaccess.DataAccessException;
-import model.ErrorMessage;
-import model.RecordUtils;
-import model.RegisterRequest;
-import model.RegisterResult;
+import model.utils.ErrorMessage;
+import model.utils.RecordUtils;
+import model.request.RegisterRequest;
+import model.result.RegisterResult;
 import service.UserService;
 import spark.Request;
 import spark.Response;
