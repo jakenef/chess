@@ -8,14 +8,14 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.ArrayList;
 
 public class MemoryGameDataAccess extends MemoryDataAccess<Integer, GameData> implements GameDataAccess {
-    private static final AtomicInteger gameIdCounter = new AtomicInteger(1);
+    private static final AtomicInteger GAME_ID_COUNTER = new AtomicInteger(1);
 
     @Override
     public GameData createGame(String gameName) throws DataAccessException {
         if (gameName == null || gameName.isEmpty()){
             throw new DataAccessException("bad request");
         }
-        GameData newGame = new GameData(gameIdCounter.getAndIncrement(),
+        GameData newGame = new GameData(GAME_ID_COUNTER.getAndIncrement(),
                 null, null, gameName, new ChessGame());
         dataMap.put(newGame.gameID(), newGame);
         return newGame;
