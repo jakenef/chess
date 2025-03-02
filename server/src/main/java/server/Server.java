@@ -17,6 +17,7 @@ public class Server {
     private final LogoutHandler logoutHandler;
     private final ListGamesHandler listGamesHandler;
     private final CreateGameHandler createGameHandler;
+    private final JoinGameHandler joinGameHandler;
 
     public Server(){
         GameDataAccess gameDA = DataAccessFactory.createGameDataAccess();
@@ -33,6 +34,7 @@ public class Server {
         this.logoutHandler = new LogoutHandler(userService);
         this.listGamesHandler = new ListGamesHandler(gameService);
         this.createGameHandler = new CreateGameHandler(gameService);
+        this.joinGameHandler = new JoinGameHandler(gameService);
     }
 
     public int run(int desiredPort) {
@@ -47,6 +49,7 @@ public class Server {
         Spark.delete("/session", logoutHandler::handle);
         Spark.get("/game", listGamesHandler::handle);
         Spark.post("/game", createGameHandler::handle);
+        Spark.put("/game", joinGameHandler::handle);
 
         Spark.awaitInitialization();
         return Spark.port();

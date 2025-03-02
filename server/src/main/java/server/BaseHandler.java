@@ -30,8 +30,10 @@ public abstract class BaseHandler<T, R> {
         } catch (DataAccessException e){
             if (Objects.equals(e.getMessage(), "unauthorized")) {
                 return errorResponse(res, 401, e.getMessage());
-            } else if (Objects.equals(e.getMessage(), "username already taken")) {
+            } else if (e.getMessage().equals("username already taken") || e.getMessage().equals("already taken")) {
                 return errorResponse(res, 403, e.getMessage());
+            }else if(e.getMessage().equals("bad request")){
+                return errorResponse(res, 400, e.getMessage());
             }else{
                 return errorResponse(res, 500, e.getMessage());
             }

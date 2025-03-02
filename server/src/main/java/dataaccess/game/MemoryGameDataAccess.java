@@ -13,10 +13,10 @@ public class MemoryGameDataAccess extends MemoryDataAccess<Integer, GameData> im
     @Override
     public GameData createGame(String gameName) throws DataAccessException {
         if (gameName == null || gameName.isEmpty()){
-            throw new DataAccessException("gameName is null");
+            throw new DataAccessException("bad request");
         }
         GameData newGame = new GameData(gameIdCounter.getAndIncrement(),
-                "", "", gameName, new ChessGame());
+                null, null, gameName, new ChessGame());
         dataMap.put(newGame.gameID(), newGame);
         return newGame;
     }
@@ -27,12 +27,39 @@ public class MemoryGameDataAccess extends MemoryDataAccess<Integer, GameData> im
     }
 
     @Override
-    public GameData getGame(Integer gameID) throws DataAccessException {
-        if (gameID != null){
+    public GameData getGame(int gameID) throws DataAccessException {
+        if (gameID > 0 && dataMap.containsKey(gameID)){
             return dataMap.get(gameID);
         }
-        throw new DataAccessException("gameID null");
+        throw new DataAccessException("bad request");
     }
 
+    @Override
+    public void joinGame(int gameID, String teamColor, String username) throws DataAccessException {
+        if (teamColor == null || teamColor.isEmpty() || username == null || username.isEmpty()
+                || !dataMap.containsKey(gameID) || (!teamColor.equals("WHITE") && !teamColor.equals("BLACK"))){
+            throw new DataAccessException("bad request");
+        }
+        GameData game = dataMap.get(gameID);
+        GameData joinedGame;
+        if(isTeamAvailable(teamColor, game)){
+            if(teamColor.equals("WHITE")){
+                joinedGame = new GameData(game.gameID(), username, game.blackUsername(), game.gameName(), game.game());
+            } else {
+                joinedGame = new GameData(game.gameID(), game.whiteUsername(), username, game.gameName(), game.game());
+            }
+            dataMap.remove(gameID);
+            dataMap.put(gameID, joinedGame);
+        } else {
+            throw new DataAccessException("already taken");
+        }
+    }
 
+    public boolean isTeamAvailable(String teamColor, GameData game){
+        if(teamColor.equals("WHITE")){
+            return game.whiteUsername() == null;
+        } else {
+            return game.blackUsername() == null;
+        }
+    }
 }

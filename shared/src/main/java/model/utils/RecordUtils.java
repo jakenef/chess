@@ -12,8 +12,11 @@ public class RecordUtils {
         try {
             for(Field field : fields){
                 field.setAccessible(true);
-                String fieldVal = (String) field.get(record);
-                if (fieldVal == null || fieldVal.isEmpty()){
+                Object fieldVal = field.get(record);
+                if (fieldVal instanceof String strVal && strVal.isEmpty()) {
+                    return true;
+                }
+                if (fieldVal == null){
                     return true;
                 }
             }

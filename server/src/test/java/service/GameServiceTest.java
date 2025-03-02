@@ -5,6 +5,7 @@ import dataaccess.DataAccessFactory;
 import dataaccess.auth.AuthDataAccess;
 import dataaccess.game.GameDataAccess;
 import dataaccess.user.UserDataAccess;
+import model.request.JoinGameRequest;
 import model.request.CreateGameRequest;
 import model.result.CreateGameResult;
 import model.GameData;
@@ -87,5 +88,43 @@ class GameServiceTest {
     void createGameNegative(){
         assertThrows(DataAccessException.class, () -> gameService.createGame
                 (new CreateGameRequest("bad", "name")));
+    }
+
+    @Test
+    void joinGamePositive(){
+        try{
+            LoginRequest logReq = new LoginRequest("testName", "testPassword");
+            LoginResult logRes = userService.login(logReq);
+            CreateGameRequest creReq = new CreateGameRequest(logRes.authToken(), "testGame");
+            CreateGameResult creRes = gameService.createGame(creReq);
+
+            JoinGameRequest joinReq = new JoinGameRequest(logRes.authToken(), "WHITE", creRes.gameID());
+            gameService.joinGame(joinReq);
+
+            assertFalse(gameDA.getGame(creRes.gameID()).whiteUsername().isEmpty());
+        } catch (DataAccessException e){
+            fail(e.getMessage());
+        }
+    }
+
+    @Test
+    void joinGameNegative(){
+        try{
+            LoginRequest logReq = new LoginRequest("testName", "testPassword");
+            LoginResult logRes = userService.login(logReq);
+            CreateGameRequest creReq = new CreateGameRequest(logRes.authToken(), "testGame");
+            CreateGameResult creRes = gameService.createGame(creReq);
+
+            RegisterRequest regReq2 = new RegisterRequest("testName2", "testPassword", "test@t.com");
+            RegisterResult res2 = userService.register(regReq2);
+
+            JoinGameRequest joinReq = new JoinGameRequest(logRes.authToken(), "WHITE", creRes.gameID());
+            gameService.joinGame(joinReq);
+
+            JoinGameRequest joinReq2 = new JoinGameRequest(res2.authToken(), "WHITE", creRes.gameID());
+            assertThrows(DataAccessException.class, () -> gameService.joinGame(joinReq2));
+        } catch (DataAccessException e){
+            fail(e.getMessage());
+        }
     }
 }
