@@ -11,7 +11,7 @@ public class MemoryUserDataAccess extends MemoryDataAccess<String, UserData> imp
             throw new DataAccessException("username null");
         }
         if (dataMap.containsKey(user.username())) {
-            throw new DataAccessException("username already taken");
+            throw new DataAccessException("already taken");
         }
         dataMap.put(user.username(), user);
     }

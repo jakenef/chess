@@ -7,8 +7,6 @@ import model.utils.RecordUtils;
 import spark.Request;
 import spark.Response;
 
-import java.util.Objects;
-
 public abstract class BaseHandler<T, R> {
     private final Gson gson = new Gson();
 
@@ -28,15 +26,15 @@ public abstract class BaseHandler<T, R> {
             res.status(200);
             return gson.toJson(result);
         } catch (DataAccessException e){
-            if (Objects.equals(e.getMessage(), "unauthorized")) {
-                return errorResponse(res, 401, e.getMessage());
-            } else if (e.getMessage().equals("username already taken") || e.getMessage().equals("already taken")) {
-                return errorResponse(res, 403, e.getMessage());
-            }else if(e.getMessage().equals("bad request")){
-                return errorResponse(res, 400, e.getMessage());
-            }else{
-                return errorResponse(res, 500, e.getMessage());
-            }
+            String errorMsg = e.getMessage();
+            int statusCode = switch(errorMsg) {
+                case "bad request" -> 400;
+                case "unauthorized" -> 401;
+                case "already taken" -> 403;
+                default -> 500;
+            };
+
+            return errorResponse(res, statusCode, errorMsg);
         }
     }
 
