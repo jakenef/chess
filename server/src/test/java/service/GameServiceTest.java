@@ -2,6 +2,7 @@ package service;
 
 import dataaccess.DataAccessException;
 import dataaccess.DataAccessFactory;
+import dataaccess.DatabaseManager;
 import dataaccess.auth.AuthDataAccess;
 import dataaccess.game.GameDataAccess;
 import dataaccess.user.UserDataAccess;
@@ -40,6 +41,7 @@ class GameServiceTest {
         userService = new UserService(gameDA, userDA, authDA);
 
         try {
+            DatabaseManager.configureDatabase();
             RegisterRequest regReq = new RegisterRequest("testName", "testPassword", "test@t.com");
             RegisterResult res = userService.register(regReq);
             userService.logout(new LogoutRequest(res.authToken()));

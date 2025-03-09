@@ -19,7 +19,7 @@ public class Server {
     private final CreateGameHandler createGameHandler;
     private final JoinGameHandler joinGameHandler;
 
-    public Server(){
+    public Server() {
         GameDataAccess gameDA = DataAccessFactory.createGameDataAccess();
         UserDataAccess userDA = DataAccessFactory.createUserDataAccess();
         AuthDataAccess authDA = DataAccessFactory.createAuthDataAccess();
@@ -35,6 +35,13 @@ public class Server {
         this.listGamesHandler = new ListGamesHandler(gameService);
         this.createGameHandler = new CreateGameHandler(gameService);
         this.joinGameHandler = new JoinGameHandler(gameService);
+        try {
+            DatabaseManager.configureDatabase();
+            System.out.println("Database configured successfully!");
+        } catch (DataAccessException e) {
+            System.out.println("Failed to configure the database: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     public int run(int desiredPort) {

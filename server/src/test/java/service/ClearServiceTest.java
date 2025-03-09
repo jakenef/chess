@@ -27,6 +27,7 @@ class ClearServiceTest {
         clearService = new ClearService(gameDA, userDA, authDA);
 
         try{
+            DatabaseManager.configureDatabase();
             userDA.createUser(new UserData("testUser1", "password1", "test@test.com"));
             userDA.createUser(new UserData("testUser2", "password456", "test2@example.com"));
             gameDA.createGame("gameName");

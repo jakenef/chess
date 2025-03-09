@@ -27,6 +27,12 @@ class UserServiceTest {
         userDA = DataAccessFactory.createUserDataAccess();
         authDA = DataAccessFactory.createAuthDataAccess();
         userService = new UserService(gameDA, userDA, authDA);
+
+        try {
+            DatabaseManager.configureDatabase();
+        } catch (DataAccessException e){
+            fail("Setup failed: " + e.getMessage());
+        }
     }
 
     @Test
