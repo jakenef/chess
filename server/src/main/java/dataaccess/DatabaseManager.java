@@ -110,9 +110,30 @@ public class DatabaseManager {
                       id INT NOT NULL AUTO_INCREMENT,
                       username VARCHAR(256) NOT NULL,
                       authToken VARCHAR(256) NOT NULL,
+                      `json` TEXT DEFAULT NULL,
                       PRIMARY KEY (id),
                       INDEX(authToken),
                       INDEX(username)
+                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+                    """,
+                    """
+                    CREATE TABLE IF NOT EXISTS user (
+                    `id` INT NOT NULL AUTO_INCREMENT,
+                    `username` VARCHAR(256) NOT NULL,
+                    `password` VARCHAR(256) NOT NULL,
+                    `email` VARCHAR(256),
+                    PRIMARY KEY (id),
+                    INDEX(username)
+                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+                    """,
+                    """
+                    CREATE TABLE IF NOT EXISTS game (
+                    `gameID` INT NOT NULL AUTO_INCREMENT,
+                    `whiteUsername` VARCHAR(256),
+                    `blackUsername` VARCHAR(256),
+                    `gameName` VARCHAR(256),
+                    `json` TEXT DEFAULT NULL,
+                    PRIMARY KEY (gameID)
                     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
                     """
             };
@@ -130,9 +151,9 @@ public class DatabaseManager {
     public static void clearAllTables() throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
             var statements = new String[]{
-                    "TRUNCATE TABLE AuthData",
-                    "TRUNCATE TABLE Users",
-                    "TRUNCATE TABLE Games"
+                    "TRUNCATE TABLE auth",
+                    "TRUNCATE TABLE user",
+                    "TRUNCATE TABLE game"
             };
 
             for (var statement : statements) {

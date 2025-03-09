@@ -23,6 +23,7 @@ class SQLAuthDataAccessTest {
 
     @Test
     void deleteAll() {
+
     }
 
     @Test
