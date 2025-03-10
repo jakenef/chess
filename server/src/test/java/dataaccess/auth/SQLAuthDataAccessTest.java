@@ -37,7 +37,6 @@ class SQLAuthDataAccessTest {
         } catch (DataAccessException e){
             fail(e.getMessage());
         }
-        // get created, clear, get empty, assert empty
     }
 
     @Test
@@ -57,7 +56,36 @@ class SQLAuthDataAccessTest {
     }
 
     @Test
-    void deleteAuth() {
+    void deleteAuthPos() {
+        try{
+            AuthData creRes = authDA.createAuth("testUser");
+            assertTrue(authDA.isAuthorized(creRes.authToken()));
+            authDA.deleteAuth(creRes.authToken());
+            assertFalse(authDA.isAuthorized(creRes.authToken()));
+        } catch (DataAccessException e){
+            fail(e.getMessage());
+        }
+    }
+
+    @Test
+    void isEmptyPos(){
+        assertTrue(authDA.isEmpty());
+    }
+
+    @Test
+    void isEmptyNeg(){
+        try{
+            AuthData creRes = authDA.createAuth("testUser");
+            assertTrue(authDA.isAuthorized(creRes.authToken()));
+        } catch (DataAccessException e){
+            fail("setup failed: " + e.getMessage());
+        }
+        assertFalse(authDA.isEmpty());
+    }
+
+    @Test
+    void deleteAuthNeg(){
+        assertThrows(DataAccessException.class, () -> authDA.deleteAuth(null));
     }
 
     @Test

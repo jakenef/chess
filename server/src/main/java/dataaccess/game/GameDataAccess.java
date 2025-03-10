@@ -11,4 +11,5 @@ public interface GameDataAccess {
     ArrayList<GameData> getAllGames() throws DataAccessException;
     GameData getGame(int gameID) throws DataAccessException;
     void joinGame(int gameID, String teamColor, String username) throws DataAccessException;
+    boolean isEmpty();
 }

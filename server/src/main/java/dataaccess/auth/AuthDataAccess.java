@@ -9,4 +9,5 @@ public interface AuthDataAccess {
     void deleteAuth(String authToken) throws DataAccessException;
     AuthData getAuth(String authToken) throws DataAccessException;
     boolean isAuthorized(String authToken) throws DataAccessException;
+    boolean isEmpty();
 }

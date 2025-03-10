@@ -10,6 +10,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import dataaccess.DataAccessFactory;
 
+import java.util.logging.Logger;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class ClearServiceTest {
@@ -41,12 +43,12 @@ class ClearServiceTest {
     void clearAll() throws DataAccessException {
         assertFalse(userDA.toString().isEmpty());
         assertFalse(gameDA.toString().isEmpty());
-        assertFalse(authDA.toString().isEmpty());
+        assertFalse(authDA.isEmpty());
 
         clearService.clearAll(new ClearRequest());
 
         assertTrue(userDA.toString().isEmpty());
         assertTrue(gameDA.toString().isEmpty());
-        assertTrue(authDA.toString().isEmpty());
+        assertTrue(authDA.isEmpty());
     }
 }

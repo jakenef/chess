@@ -10,6 +10,8 @@ import java.sql.SQLDataException;
 import java.sql.SQLException;
 import java.util.UUID;
 
+import static dataaccess.user.SQLUserDataAccess.isDatabaseEmpty;
+
 public class SQLAuthDataAccess implements AuthDataAccess {
     @Override
     public void deleteAll() throws DataAccessException{
@@ -32,7 +34,16 @@ public class SQLAuthDataAccess implements AuthDataAccess {
 
     @Override
     public void deleteAuth(String authToken) throws DataAccessException {
-
+        if(authToken == null || authToken.isEmpty()){
+            throw new DataAccessException("authToken null");
+        }
+        if (isAuthorized(authToken)){
+            var conn = DatabaseManager.getConnection();
+            var statement = "DELETE FROM auth WHERE authToken = ?";
+            DatabaseManager.executeUpdate(statement, authToken);
+        } else {
+            throw new DataAccessException("unauthorized");
+        }
     }
 
     @Override
@@ -74,6 +85,12 @@ public class SQLAuthDataAccess implements AuthDataAccess {
         } catch (SQLException e){
             throw new DataAccessException("Database error: " + e.getMessage());
         }
+    }
+
+    @Override
+    public boolean isEmpty() {
+        String statement = "SELECT COUNT(*) FROM auth";
+        return isDatabaseEmpty(statement);
     }
 
     private static AuthData readAuth(ResultSet rs) throws SQLException {

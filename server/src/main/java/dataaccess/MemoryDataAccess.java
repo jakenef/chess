@@ -9,6 +9,10 @@ public abstract class MemoryDataAccess<K, T> {
         dataMap.clear();
     }
 
+    public boolean isEmpty() {
+        return dataMap.isEmpty();
+    }
+
     @Override
     public String toString(){
         StringBuilder stringBuilder = new StringBuilder();
