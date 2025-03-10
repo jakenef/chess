@@ -5,12 +5,15 @@ import dataaccess.DataAccessException;
 import model.AuthData;
 import dataaccess.DatabaseManager;
 
+import java.sql.ResultSet;
+import java.sql.SQLDataException;
+import java.sql.SQLException;
 import java.util.UUID;
 
 public class SQLAuthDataAccess implements AuthDataAccess {
     @Override
     public void deleteAll() throws DataAccessException{
-        var statement = "DELETE FROM AuthData";
+        var statement = "DELETE FROM auth";
         DatabaseManager.executeUpdate(statement);
     }
 
@@ -23,7 +26,7 @@ public class SQLAuthDataAccess implements AuthDataAccess {
         AuthData newAuth = new AuthData(authToken, username);
         var statement = "INSERT INTO auth (username, authToken, json) VALUES (?, ?, ?)";
         var json = new Gson().toJson(newAuth);
-        var id = DatabaseManager.executeUpdate(statement, username, authToken, json);
+        var code = DatabaseManager.executeUpdate(statement, username, authToken, json);
         return newAuth;
     }
 
@@ -40,5 +43,12 @@ public class SQLAuthDataAccess implements AuthDataAccess {
     @Override
     public boolean isAuthorized(String authToken) throws DataAccessException {
         return false;
+    }
+
+    public static AuthData readAuth(ResultSet rs) throws SQLException {
+        String username = rs.getString("username");
+        String authToken = rs.getString("authToken");
+
+        return new AuthData(authToken, username);
     }
 }

@@ -2,6 +2,7 @@ package dataaccess;
 
 import dataaccess.auth.AuthDataAccess;
 import dataaccess.auth.MemoryAuthDataAccess;
+import dataaccess.auth.SQLAuthDataAccess;
 import dataaccess.game.GameDataAccess;
 import dataaccess.game.MemoryGameDataAccess;
 import dataaccess.user.MemoryUserDataAccess;
@@ -19,6 +20,6 @@ public class DataAccessFactory {
     }
 
     public static AuthDataAccess createAuthDataAccess() {
-        return new MemoryAuthDataAccess();
+        return new SQLAuthDataAccess();
     }
 }

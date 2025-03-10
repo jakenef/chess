@@ -64,7 +64,7 @@ public class DatabaseManager {
      * }
      * </code>
      */
-    static Connection getConnection() throws DataAccessException {
+    public static Connection getConnection() throws DataAccessException {
         try {
             var conn = DriverManager.getConnection(CONNECTION_URL, USER, PASSWORD);
             conn.setCatalog(DATABASE_NAME);
@@ -122,6 +122,7 @@ public class DatabaseManager {
                     `username` VARCHAR(256) NOT NULL,
                     `password` VARCHAR(256) NOT NULL,
                     `email` VARCHAR(256),
+                    `json` TEXT DEFAULT NULL,
                     PRIMARY KEY (id),
                     INDEX(username)
                     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
