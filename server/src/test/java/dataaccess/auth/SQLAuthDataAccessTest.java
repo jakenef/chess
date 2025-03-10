@@ -7,9 +7,6 @@ import model.AuthData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.sql.SQLException;
-
-import static dataaccess.auth.SQLAuthDataAccess.readAuth;
 import static org.junit.jupiter.api.Assertions.*;
 class SQLAuthDataAccessTest {
     static AuthDataAccess authDA = DataAccessFactory.createAuthDataAccess();
@@ -27,28 +24,36 @@ class SQLAuthDataAccessTest {
 
     @Test
     void deleteAll() {
-
+        AuthData authRes = null;
+        try {
+            authRes = authDA.createAuth("testUser");
+        } catch (DataAccessException e) {
+            fail("setup failed: " + e.getMessage());
+        }
+        try {
+            assertEquals("testUser", authDA.getAuth(authRes.authToken()).username());
+            authDA.deleteAll();
+            assertFalse(authDA.isAuthorized(authRes.authToken()));
+        } catch (DataAccessException e){
+            fail(e.getMessage());
+        }
+        // get created, clear, get empty, assert empty
     }
 
     @Test
-    void createAuth() {
+    void createAuthPos() {
         try{
             AuthData result = authDA.createAuth("testUser");
-            AuthData dbRes = null;
-            var conn = DatabaseManager.getConnection();
-            var statement = "SELECT authToken, username FROM auth WHERE username = ?";
-            var ps = conn.prepareStatement(statement);
-            ps.setString(1, "testUser");
-            var rs = ps.executeQuery();
-            if(rs.next()){
-                dbRes = readAuth(rs);
-            }
+            AuthData dbRes = authDA.getAuth(result.authToken());
             assertEquals(result, dbRes);
-        } catch (DataAccessException e){
+        } catch (DataAccessException e) {
             fail(e.getMessage());
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
         }
+    }
+
+    @Test
+    void createAuthNeg(){
+        assertThrows(DataAccessException.class, () -> authDA.createAuth(null));
     }
 
     @Test
@@ -56,10 +61,23 @@ class SQLAuthDataAccessTest {
     }
 
     @Test
-    void getAuth() {
+    void getAuthPos() {
+        AuthData authRes = null;
+        try {
+            authRes = authDA.createAuth("testUser");
+        } catch (DataAccessException e) {
+            fail("setup failed: " + e.getMessage());
+        }
+        try {
+            assertEquals(authRes, authDA.getAuth(authRes.authToken()));
+        } catch (DataAccessException e) {
+            fail(e.getMessage());
+        }
     }
 
     @Test
-    void isAuthorized() {
+    void getAuthNeg() {
+        assertThrows(DataAccessException.class, () -> authDA.getAuth("badToken"));
+
     }
 }
