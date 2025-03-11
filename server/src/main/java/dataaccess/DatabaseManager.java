@@ -129,8 +129,8 @@ public class DatabaseManager {
                     """
                     CREATE TABLE IF NOT EXISTS game (
                     `gameID` INT NOT NULL AUTO_INCREMENT,
-                    `whiteUsername` VARCHAR(256),
-                    `blackUsername` VARCHAR(256),
+                    `whiteUsername` VARCHAR(256) DEFAULT NULL,
+                    `blackUsername` VARCHAR(256) DEFAULT NULL,
                     `gameName` VARCHAR(256),
                     `json` TEXT DEFAULT NULL,
                     PRIMARY KEY (gameID)

@@ -6,7 +6,7 @@ import model.GameData;
 import java.util.ArrayList;
 
 public interface GameDataAccess {
-    void deleteAll();
+    void deleteAll() throws DataAccessException;
     GameData createGame(String gameName) throws DataAccessException;
     ArrayList<GameData> getAllGames() throws DataAccessException;
     GameData getGame(int gameID) throws DataAccessException;
