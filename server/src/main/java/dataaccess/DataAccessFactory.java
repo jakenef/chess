@@ -6,6 +6,7 @@ import dataaccess.auth.SQLAuthDataAccess;
 import dataaccess.game.GameDataAccess;
 import dataaccess.game.MemoryGameDataAccess;
 import dataaccess.user.MemoryUserDataAccess;
+import dataaccess.user.SQLUserDataAccess;
 import dataaccess.user.UserDataAccess;
 
 // one place to change implementation from memory to SQL
@@ -16,7 +17,7 @@ public class DataAccessFactory {
     }
 
     public static UserDataAccess createUserDataAccess() {
-        return new MemoryUserDataAccess();
+        return new SQLUserDataAccess();
     }
 
     public static AuthDataAccess createAuthDataAccess() {

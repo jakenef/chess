@@ -30,6 +30,7 @@ class ClearServiceTest {
 
         try{
             DatabaseManager.configureDatabase();
+            DatabaseManager.clearAllTables();
             userDA.createUser(new UserData("testUser1", "password1", "test@test.com"));
             userDA.createUser(new UserData("testUser2", "password456", "test2@example.com"));
             gameDA.createGame("gameName");
@@ -41,13 +42,13 @@ class ClearServiceTest {
 
     @Test
     void clearAll() throws DataAccessException {
-        assertFalse(userDA.toString().isEmpty());
+        assertFalse(userDA.isEmpty());
         assertFalse(gameDA.toString().isEmpty());
         assertFalse(authDA.isEmpty());
 
         clearService.clearAll(new ClearRequest());
 
-        assertTrue(userDA.toString().isEmpty());
+        assertTrue(userDA.isEmpty());
         assertTrue(gameDA.toString().isEmpty());
         assertTrue(authDA.isEmpty());
     }

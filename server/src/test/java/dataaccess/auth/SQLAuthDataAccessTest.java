@@ -106,6 +106,5 @@ class SQLAuthDataAccessTest {
     @Test
     void getAuthNeg() {
         assertThrows(DataAccessException.class, () -> authDA.getAuth("badToken"));
-
     }
 }

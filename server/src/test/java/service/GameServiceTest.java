@@ -42,6 +42,7 @@ class GameServiceTest {
 
         try {
             DatabaseManager.configureDatabase();
+            DatabaseManager.clearAllTables();
             RegisterRequest regReq = new RegisterRequest("testName", "testPassword", "test@t.com");
             RegisterResult res = userService.register(regReq);
             userService.logout(new LogoutRequest(res.authToken()));

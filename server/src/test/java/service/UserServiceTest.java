@@ -30,6 +30,7 @@ class UserServiceTest {
 
         try {
             DatabaseManager.configureDatabase();
+            DatabaseManager.clearAllTables();
         } catch (DataAccessException e){
             fail("Setup failed: " + e.getMessage());
         }

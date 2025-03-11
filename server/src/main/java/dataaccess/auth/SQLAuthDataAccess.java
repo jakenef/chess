@@ -1,12 +1,10 @@
 package dataaccess.auth;
 
-import com.google.gson.Gson;
 import dataaccess.DataAccessException;
 import model.AuthData;
 import dataaccess.DatabaseManager;
 
 import java.sql.ResultSet;
-import java.sql.SQLDataException;
 import java.sql.SQLException;
 import java.util.UUID;
 
@@ -26,9 +24,8 @@ public class SQLAuthDataAccess implements AuthDataAccess {
         }
         String authToken = UUID.randomUUID().toString();
         AuthData newAuth = new AuthData(authToken, username);
-        var statement = "INSERT INTO auth (username, authToken, json) VALUES (?, ?, ?)";
-        var json = new Gson().toJson(newAuth);
-        var code = DatabaseManager.executeUpdate(statement, username, authToken, json);
+        var statement = "INSERT INTO auth (username, authToken) VALUES (?, ?)";
+        DatabaseManager.executeUpdate(statement, username, authToken);
         return newAuth;
     }
 
@@ -60,7 +57,7 @@ public class SQLAuthDataAccess implements AuthDataAccess {
                 ps.setString(1, authToken);
                 var rs = ps.executeQuery();
                 if (rs.next()){
-                    return readAuth(rs);
+                    return readAuthFromRS(rs);
                 } else {
                     throw new DataAccessException("unauthorized");
                 }
@@ -93,7 +90,7 @@ public class SQLAuthDataAccess implements AuthDataAccess {
         return isDatabaseEmpty(statement);
     }
 
-    private static AuthData readAuth(ResultSet rs) throws SQLException {
+    private static AuthData readAuthFromRS(ResultSet rs) throws SQLException {
         String username = rs.getString("username");
         String authToken = rs.getString("authToken");
 
