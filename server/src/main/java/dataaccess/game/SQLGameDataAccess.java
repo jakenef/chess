@@ -5,7 +5,6 @@ import com.google.gson.Gson;
 import dataaccess.DataAccessException;
 import dataaccess.DatabaseManager;
 import model.GameData;
-import model.UserData;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -51,7 +50,6 @@ public class SQLGameDataAccess implements GameDataAccess{
     public ArrayList<GameData> getAllGames() throws DataAccessException {
         ArrayList<GameData> games = new ArrayList<>();
         var conn = DatabaseManager.getConnection();
-        var json = new Gson().toJson(new ChessGame());
         var statement = "SELECT * FROM game";
         try {
             var ps = conn.prepareStatement(statement);

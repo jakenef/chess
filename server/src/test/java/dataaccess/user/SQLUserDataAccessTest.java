@@ -3,7 +3,6 @@ package dataaccess.user;
 import dataaccess.DataAccessException;
 import dataaccess.DataAccessFactory;
 import dataaccess.DatabaseManager;
-import model.AuthData;
 import model.UserData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

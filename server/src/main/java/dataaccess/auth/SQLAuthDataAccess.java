@@ -35,7 +35,6 @@ public class SQLAuthDataAccess implements AuthDataAccess {
             throw new DataAccessException("authToken null");
         }
         if (isAuthorized(authToken)){
-            var conn = DatabaseManager.getConnection();
             var statement = "DELETE FROM auth WHERE authToken = ?";
             DatabaseManager.executeUpdate(statement, authToken);
         } else {

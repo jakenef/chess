@@ -27,9 +27,8 @@ class SQLGameDataAccessTest {
 
     @Test
     void deleteAll() {
-        GameData newGame = null;
         try {
-            newGame = gameDA.createGame("testGame");
+            gameDA.createGame("testGame");
         } catch (DataAccessException e) {
             fail("setup failed: " + e.getMessage());
         }
@@ -120,7 +119,7 @@ class SQLGameDataAccessTest {
     @Test
     void isEmptyNeg(){
         try {
-            GameData newGame = gameDA.createGame("testGame");
+            gameDA.createGame("testGame");
         } catch (DataAccessException e){
             fail(e.getMessage());
         }
