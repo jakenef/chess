@@ -5,6 +5,7 @@ import dataaccess.auth.MemoryAuthDataAccess;
 import dataaccess.auth.SQLAuthDataAccess;
 import dataaccess.game.GameDataAccess;
 import dataaccess.game.MemoryGameDataAccess;
+import dataaccess.game.SQLGameDataAccess;
 import dataaccess.user.MemoryUserDataAccess;
 import dataaccess.user.SQLUserDataAccess;
 import dataaccess.user.UserDataAccess;
@@ -13,7 +14,7 @@ import dataaccess.user.UserDataAccess;
 public class DataAccessFactory {
 
     public static GameDataAccess createGameDataAccess() {
-        return new MemoryGameDataAccess();
+        return new SQLGameDataAccess();
     }
 
     public static UserDataAccess createUserDataAccess() {

@@ -12,6 +12,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
+import static dataaccess.game.MemoryGameDataAccess.isTeamAvailable;
 import static dataaccess.user.SQLUserDataAccess.isDatabaseEmpty;
 
 public class SQLGameDataAccess implements GameDataAccess{
@@ -48,7 +49,20 @@ public class SQLGameDataAccess implements GameDataAccess{
 
     @Override
     public ArrayList<GameData> getAllGames() throws DataAccessException {
-        return null;
+        ArrayList<GameData> games = new ArrayList<>();
+        var conn = DatabaseManager.getConnection();
+        var json = new Gson().toJson(new ChessGame());
+        var statement = "SELECT * FROM game";
+        try {
+            var ps = conn.prepareStatement(statement);
+            var rs = ps.executeQuery();
+            while(rs.next()){
+                games.add(readGameFromRS(rs));
+            }
+        } catch (SQLException e) {
+            throw new DataAccessException("database error: " + e.getMessage());
+        }
+        return games;
     }
 
     @Override
@@ -74,7 +88,29 @@ public class SQLGameDataAccess implements GameDataAccess{
 
     @Override
     public void joinGame(int gameID, String teamColor, String username) throws DataAccessException {
-
+        if (teamColor == null || teamColor.isEmpty() || username == null || username.isEmpty()
+                || (!teamColor.equals("WHITE") && !teamColor.equals("BLACK"))){
+            throw new DataAccessException("bad request");
+        }
+        GameData existingGame = getGame(gameID);
+        if (isTeamAvailable(teamColor, existingGame)){
+            String column = teamColor.equals("WHITE") ? "whiteUsername" : "blackUsername";
+            var conn = DatabaseManager.getConnection();
+            var statement = "UPDATE game SET " + column + " = ? WHERE gameID = ?";
+            try {
+                var ps = conn.prepareStatement(statement);
+                ps.setString(1, username);
+                ps.setInt(2, gameID);
+                int affectedRows = ps.executeUpdate();
+                if (affectedRows == 0){
+                    throw new DataAccessException("bad request");
+                }
+            } catch (SQLException e) {
+                throw new DataAccessException(e.getMessage());
+            }
+        } else {
+            throw new DataAccessException("already taken");
+        }
     }
 
     @Override

@@ -55,7 +55,7 @@ public class MemoryGameDataAccess extends MemoryDataAccess<Integer, GameData> im
         }
     }
 
-    public boolean isTeamAvailable(String teamColor, GameData game){
+    public static boolean isTeamAvailable(String teamColor, GameData game){
         if(teamColor.equals("WHITE")){
             return game.whiteUsername() == null;
         } else {

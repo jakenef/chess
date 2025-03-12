@@ -43,13 +43,13 @@ class ClearServiceTest {
     @Test
     void clearAll() throws DataAccessException {
         assertFalse(userDA.isEmpty());
-        assertFalse(gameDA.toString().isEmpty());
+        assertFalse(gameDA.isEmpty());
         assertFalse(authDA.isEmpty());
 
         clearService.clearAll(new ClearRequest());
 
         assertTrue(userDA.isEmpty());
-        assertTrue(gameDA.toString().isEmpty());
+        assertTrue(gameDA.isEmpty());
         assertTrue(authDA.isEmpty());
     }
 }
