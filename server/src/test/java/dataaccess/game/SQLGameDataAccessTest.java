@@ -77,8 +77,8 @@ class SQLGameDataAccessTest {
     @Test
     void getGamePos() {
         try {
-            GameData newGame = gameDA.createGame("testGame");
-            assertEquals(newGame, gameDA.getGame(newGame.gameID()));
+            GameData newGameGet = gameDA.createGame("testGame");
+            assertTrue(newGameGet.equals(gameDA.getGame(newGameGet.gameID())));
         } catch (DataAccessException e){
             fail(e.getMessage());
         }
