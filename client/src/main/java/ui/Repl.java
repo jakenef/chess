@@ -4,14 +4,23 @@ import java.util.Scanner;
 import static ui.EscapeSequences.*;
 
 public class Repl {
-    private final ClientInterface client;
+    private ClientInterface client;
     private final String serverURL;
     private State state;
 
     public Repl(String serverURL) {
         this.serverURL = serverURL;
-        this.state = State.SIGNEDOUT;
+        this.state = State.SIGNED_OUT;
         this.client = new SignedOutClient();
+    }
+
+    public void setState(State newState){
+        this.state = newState;
+        switch (newState){
+            case SIGNED_OUT -> client = new SignedOutClient();
+            case SIGNED_IN -> client = new SignedInClient();
+            case GAMEPLAY -> client = new GameplayClient();
+        }
     }
 
     public void run(){
@@ -37,5 +46,9 @@ public class Repl {
 
     private void printPrompt(){
         System.out.print("\n" + RESET_TEXT_COLOR + state + ">>> " + SET_TEXT_COLOR_GREEN);
+    }
+
+    public String getServerURL(){
+        return serverURL;
     }
 }
