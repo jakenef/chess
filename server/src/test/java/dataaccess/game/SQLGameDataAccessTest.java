@@ -129,11 +129,15 @@ class SQLGameDataAccessTest {
             GameData updatedGame = new GameData(1,
                     null, null, "testGame", chessGame);
             gameDA.updateGame(updatedGame);
-
+            assertEquals(updatedGame, gameDA.getGame(updatedGame.gameID()));
         } catch (DataAccessException | InvalidMoveException e){
             fail("setup failed: " + e.getMessage());
         }
-        assertFalse(false);
+    }
+
+    @Test
+    void updateGameNeg(){
+        assertThrows(DataAccessException.class, () -> gameDA.updateGame(null));
     }
 
     @Test

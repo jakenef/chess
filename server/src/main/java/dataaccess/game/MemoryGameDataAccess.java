@@ -57,7 +57,11 @@ public class MemoryGameDataAccess extends MemoryDataAccess<Integer, GameData> im
 
     @Override
     public void updateGame(GameData gameData) throws DataAccessException {
-        return;
+        if (gameData == null || gameData.gameID() < 0 || gameData.game() == null){
+            throw new DataAccessException("bad request");
+        }
+        dataMap.remove(gameData.gameID());
+        dataMap.put(gameData.gameID(), gameData);
     }
 
     public static boolean isTeamAvailable(String teamColor, GameData game){
