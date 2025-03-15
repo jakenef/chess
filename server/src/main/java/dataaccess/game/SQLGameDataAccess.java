@@ -46,6 +46,27 @@ public class SQLGameDataAccess implements GameDataAccess{
         }
     }
 
+    public void updateGame(GameData gameData) throws DataAccessException {
+        if (gameData == null || gameData.gameID() < 0 || gameData.game() == null){
+            throw new DataAccessException("bad request");
+        }
+        var conn = DatabaseManager.getConnection();
+        var statement = "UPDATE game SET json = ? WHERE gameID = ?";
+        try {
+            var ps = conn.prepareStatement(statement);
+            var json = new Gson().toJson(gameData.game());
+            ps.setString(1, json);
+            ps.setInt(2, gameData.gameID());
+
+            int affectedRows = ps.executeUpdate();
+            if (affectedRows == 0){
+                throw new DataAccessException("bad request");
+            }
+        } catch (SQLException e) {
+            throw new DataAccessException(e.getMessage());
+        }
+    }
+
     @Override
     public ArrayList<GameData> getAllGames() throws DataAccessException {
         ArrayList<GameData> games = new ArrayList<>();

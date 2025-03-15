@@ -1,5 +1,9 @@
 package dataaccess.game;
 
+import chess.ChessGame;
+import chess.ChessMove;
+import chess.ChessPosition;
+import chess.InvalidMoveException;
 import dataaccess.DataAccessException;
 import dataaccess.DataAccessFactory;
 import dataaccess.DatabaseManager;
@@ -109,6 +113,27 @@ class SQLGameDataAccessTest {
         } catch (DataAccessException e){
             fail(e.getMessage());
         }
+    }
+
+    @Test
+    void updateGamePos(){
+        try {
+            GameData newGame = gameDA.createGame("testGame");
+
+            ChessGame chessGame = newGame.game();
+            ChessPosition startPos = new ChessPosition(2, 1);
+            ChessPosition endPos = new ChessPosition(3, 1);
+            ChessMove chessMove = new ChessMove(startPos, endPos, null);
+            chessGame.makeMove(chessMove);
+
+            GameData updatedGame = new GameData(1,
+                    null, null, "testGame", chessGame);
+            gameDA.updateGame(updatedGame);
+
+        } catch (DataAccessException | InvalidMoveException e){
+            fail("setup failed: " + e.getMessage());
+        }
+        assertFalse(false);
     }
 
     @Test

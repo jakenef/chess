@@ -55,6 +55,11 @@ public class MemoryGameDataAccess extends MemoryDataAccess<Integer, GameData> im
         }
     }
 
+    @Override
+    public void updateGame(GameData gameData) throws DataAccessException {
+        return;
+    }
+
     public static boolean isTeamAvailable(String teamColor, GameData game){
         if(teamColor.equals("WHITE")){
             return game.whiteUsername() == null;
