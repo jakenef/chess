@@ -3,8 +3,10 @@ package server;
 import com.google.gson.Gson;
 import exception.ResponseException;
 import model.request.ClearRequest;
+import model.request.LoginRequest;
 import model.request.RegisterRequest;
 import model.result.ClearResult;
+import model.result.LoginResult;
 import model.result.RegisterResult;
 
 import java.io.*;
@@ -20,6 +22,11 @@ public class ServerFacade {
     public RegisterResult register(RegisterRequest request) throws ResponseException{
         var path = "/user";
         return this.makeRequest("POST", path, request, RegisterResult.class);
+    }
+
+    public LoginResult login(LoginRequest request) throws ResponseException {
+        var path = "/session";
+        return this.makeRequest("POST", path, request, LoginResult.class);
     }
 
     public ClearResult clear(ClearRequest request) throws ResponseException {
