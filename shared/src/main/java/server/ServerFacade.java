@@ -2,12 +2,8 @@ package server;
 
 import com.google.gson.Gson;
 import exception.ResponseException;
-import model.request.ClearRequest;
-import model.request.LoginRequest;
-import model.request.RegisterRequest;
-import model.result.ClearResult;
-import model.result.LoginResult;
-import model.result.RegisterResult;
+import model.request.*;
+import model.result.*;
 
 import java.io.*;
 import java.net.*;
@@ -29,9 +25,19 @@ public class ServerFacade {
         return this.makeRequest("POST", path, request, LoginResult.class);
     }
 
+    public LogoutResult logout(LogoutRequest request) throws ResponseException {
+        var path = "/session";
+        return this.makeRequest("DELETE", path, request, LogoutResult.class);
+    }
+
     public ClearResult clear(ClearRequest request) throws ResponseException {
         var path = "/db";
         return this.makeRequest("DELETE", path, request, ClearResult.class);
+    }
+
+    public CreateGameResult createGame(CreateGameRequest request) throws ResponseException {
+        var path = "/game";
+        return this.makeRequest("POST", path, request, CreateGameResult.class);
     }
 
     private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass) throws ResponseException {

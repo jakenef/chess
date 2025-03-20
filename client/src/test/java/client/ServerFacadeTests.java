@@ -1,9 +1,7 @@
 package client;
 
 import exception.ResponseException;
-import model.request.ClearRequest;
-import model.request.LoginRequest;
-import model.request.RegisterRequest;
+import model.request.*;
 import org.junit.jupiter.api.*;
 import server.Server;
 import server.ServerFacade;
@@ -56,5 +54,54 @@ public class ServerFacadeTests {
         sFacade.clear(new ClearRequest());
         assertThrows(ResponseException.class, () -> sFacade.login(new LoginRequest(
                 "testUser", "password")));
+    }
+
+    @Test
+    public void loginPos() throws ResponseException {
+        var authData = sFacade.register(new RegisterRequest("testUser",
+                "password", "t@test.com"));
+        var loginResult = sFacade.login(new LoginRequest("testUser", "password"));
+        assertFalse(loginResult.authToken().isEmpty());
+    }
+
+    @Test
+    public void loginNeg(){
+        assertThrows(ResponseException.class, () -> sFacade.login(new
+                LoginRequest("badUser", "bad")));
+    }
+
+    @Test
+    public void logoutPos() throws ResponseException {
+        var authData = sFacade.register(new RegisterRequest("testUser",
+                "password", "t@test.com"));
+        var loginResult = sFacade.login(new LoginRequest("testUser", "password"));
+        assertDoesNotThrow(() -> sFacade.logout(new LogoutRequest(loginResult.authToken())));
+    }
+
+    @Test
+    public void logoutNeg(){
+        assertThrows(ResponseException.class, () -> sFacade.logout(new
+                LogoutRequest("notAuth")));
+    }
+
+    @Test
+    public void listGamesPos(){
+        assertFalse(false);
+    }
+
+    @Test
+    public void createGamePos() throws ResponseException {
+        var authData = sFacade.register(new RegisterRequest("testUser",
+                "password", "t@test.com"));
+        var loginResult = sFacade.login(new LoginRequest("testUser", "password"));
+        var createGameResult = sFacade.createGame
+                (new CreateGameRequest(loginResult.authToken(), "testGame"));
+        assertNotNull(createGameResult.gameID());
+    }
+
+    @Test
+    public void createGameNeg(){
+        assertThrows(ResponseException.class, () -> sFacade.createGame(new
+                CreateGameRequest("notAuth", "testGame")));
     }
 }
