@@ -90,6 +90,11 @@ public class ServerFacadeTests {
     }
 
     @Test
+    public void listGamesNeg(){
+        assertThrows(ResponseException.class, ()-> sFacade.listGame(new ListGameRequest("bad")));
+    }
+
+    @Test
     public void createGamePos() throws ResponseException {
         var authData = sFacade.register(new RegisterRequest("testUser",
                 "password", "t@test.com"));
