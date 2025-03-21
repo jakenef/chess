@@ -86,11 +86,10 @@ public class ServerFacadeTests {
 
     @Test
     public void listGamesPos() throws ResponseException {
-        sFacade.register(new RegisterRequest("testUser",
+        var registerResult = sFacade.register(new RegisterRequest("testUser",
                 "password", "t@test.com"));
-        var loginResult = sFacade.login(new LoginRequest("testUser", "password"));
-        sFacade.createGame(new CreateGameRequest(loginResult.authToken(), "testGame"));
-        var listResult = sFacade.listGame(new ListGameRequest(loginResult.authToken()));
+        sFacade.createGame(new CreateGameRequest(registerResult.authToken(), "testGame"));
+        var listResult = sFacade.listGame(new ListGameRequest(registerResult.authToken()));
         assertFalse(listResult.games().isEmpty());
     }
 
