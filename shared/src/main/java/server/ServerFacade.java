@@ -5,6 +5,7 @@ import exception.ResponseException;
 import model.request.*;
 import model.result.*;
 
+import java.awt.*;
 import java.io.*;
 import java.net.*;
 
@@ -43,6 +44,11 @@ public class ServerFacade {
     public ListGameResult listGame(ListGameRequest request) throws ResponseException {
         var path = "/game";
         return this.makeRequest("GET", path, request, ListGameResult.class);
+    }
+
+    public JoinGameResult joinGame(JoinGameRequest request) throws ResponseException {
+        var path = "/game";
+        return this.makeRequest("PUT", path, request, JoinGameResult.class);
     }
 
     private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass) throws ResponseException {

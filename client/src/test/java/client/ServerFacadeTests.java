@@ -41,7 +41,7 @@ public class ServerFacadeTests {
 
     @Test
     public void registerNegative() throws ResponseException {
-        var authData = sFacade.register(new RegisterRequest("testUser",
+        sFacade.register(new RegisterRequest("testUser",
                 "password", "t@test.com"));
         assertThrows(ResponseException.class, () -> sFacade.register(new RegisterRequest("testUser",
                 "password", "t@test.com")));
@@ -49,7 +49,7 @@ public class ServerFacadeTests {
 
     @Test
     public void clearPos() throws ResponseException {
-        var authData = sFacade.register(new RegisterRequest("testUser",
+        sFacade.register(new RegisterRequest("testUser",
                 "password", "t@test.com"));
         sFacade.clear(new ClearRequest());
         assertThrows(ResponseException.class, () -> sFacade.login(new LoginRequest(
@@ -58,7 +58,7 @@ public class ServerFacadeTests {
 
     @Test
     public void loginPos() throws ResponseException {
-        var authData = sFacade.register(new RegisterRequest("testUser",
+        sFacade.register(new RegisterRequest("testUser",
                 "password", "t@test.com"));
         var loginResult = sFacade.login(new LoginRequest("testUser", "password"));
         assertFalse(loginResult.authToken().isEmpty());
@@ -72,7 +72,7 @@ public class ServerFacadeTests {
 
     @Test
     public void logoutPos() throws ResponseException {
-        var authData = sFacade.register(new RegisterRequest("testUser",
+        sFacade.register(new RegisterRequest("testUser",
                 "password", "t@test.com"));
         var loginResult = sFacade.login(new LoginRequest("testUser", "password"));
         assertDoesNotThrow(() -> sFacade.logout(new LogoutRequest(loginResult.authToken())));
@@ -85,8 +85,13 @@ public class ServerFacadeTests {
     }
 
     @Test
-    public void listGamesPos(){
-        assertFalse(false);
+    public void listGamesPos() throws ResponseException {
+        sFacade.register(new RegisterRequest("testUser",
+                "password", "t@test.com"));
+        var loginResult = sFacade.login(new LoginRequest("testUser", "password"));
+        sFacade.createGame(new CreateGameRequest(loginResult.authToken(), "testGame"));
+        var listResult = sFacade.listGame(new ListGameRequest(loginResult.authToken()));
+        assertFalse(listResult.games().isEmpty());
     }
 
     @Test
@@ -96,7 +101,7 @@ public class ServerFacadeTests {
 
     @Test
     public void createGamePos() throws ResponseException {
-        var authData = sFacade.register(new RegisterRequest("testUser",
+        sFacade.register(new RegisterRequest("testUser",
                 "password", "t@test.com"));
         var loginResult = sFacade.login(new LoginRequest("testUser", "password"));
         var createGameResult = sFacade.createGame
@@ -108,5 +113,23 @@ public class ServerFacadeTests {
     public void createGameNeg(){
         assertThrows(ResponseException.class, () -> sFacade.createGame(new
                 CreateGameRequest("notAuth", "testGame")));
+    }
+
+    @Test
+    public void joinGamePos() throws ResponseException {
+        sFacade.register(new RegisterRequest("testUser",
+                "password", "t@test.com"));
+        var loginResult = sFacade.login(new LoginRequest("testUser", "password"));
+        var createGameResult = sFacade.createGame
+                (new CreateGameRequest(loginResult.authToken(), "testGame"));
+        assertDoesNotThrow(() -> sFacade.joinGame(new JoinGameRequest(loginResult.authToken(),
+                "WHITE", createGameResult.gameID())));
+
+    }
+
+    @Test
+    public void joinGameNeg(){
+        assertThrows(ResponseException.class, () -> sFacade.joinGame(new
+                JoinGameRequest("bad", "WHITE", 22)));
     }
 }
