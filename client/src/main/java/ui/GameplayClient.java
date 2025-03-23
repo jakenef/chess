@@ -8,6 +8,7 @@ public class GameplayClient implements ClientInterface{
 
     @Override
     public String help() {
-        return "";
+        return """
+        \thelp - display this message""";
     }
 }
