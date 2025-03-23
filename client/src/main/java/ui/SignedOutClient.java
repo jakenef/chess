@@ -1,7 +1,9 @@
 package ui;
 
 import exception.ResponseException;
+import model.request.LoginRequest;
 import model.request.RegisterRequest;
+import model.result.LoginResult;
 import model.result.RegisterResult;
 import server.ServerFacade;
 
@@ -22,7 +24,7 @@ public class SignedOutClient implements ClientInterface{
             var params = Arrays.copyOfRange(tokens, 1, tokens.length);
             return switch(cmd) {
                 case "register" -> register(params);
-                //case "login" -> login(params);
+                case "login" -> login(params);
                 case "quit" -> "quit";
                 default -> help();
             };
@@ -40,6 +42,17 @@ public class SignedOutClient implements ClientInterface{
         repl.setAuthToken(result.authToken());
         repl.setState(State.SIGNED_IN);
         return "Successfully registered user: " + result.username();
+    }
+
+    public String login(String... params) throws ResponseException {
+        if (params.length != 2){
+            throw new ResponseException(400, "Expected: login <USERNAME> <PASSWORD>");
+        }
+        LoginRequest request = new LoginRequest(params[0], params[1]);
+        LoginResult result = repl.getServer().login(request);
+        repl.setAuthToken(result.authToken());
+        repl.setState(State.SIGNED_IN);
+        return "Successfully signed in user: " + result.username();
     }
 
     @Override
