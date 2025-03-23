@@ -1,10 +1,13 @@
 package ui;
 
 import exception.ResponseException;
+import model.GameData;
+import model.request.ListGameRequest;
 import model.request.LogoutRequest;
-import server.ServerFacade;
+import model.result.ListGameResult;
 
 import java.util.Arrays;
+import java.util.List;
 
 public class SignedInClient implements ClientInterface{
     private final Repl repl;
@@ -40,11 +43,29 @@ public class SignedInClient implements ClientInterface{
         repl.getServer().logout(new LogoutRequest(repl.getAuthToken()));
         repl.setAuthToken(null);
         repl.setState(State.SIGNED_OUT);
-        return "Successfully logged out.";
+        return "Successfully signed out.";
     }
 
-    public String list(){
-        return null;
+    private String formatGameList(List<GameData> games) {
+        StringBuilder formattedList = new StringBuilder();
+
+        for (GameData game : games) {
+            String whiteUsername = (game.whiteUsername() == null) ? "empty" : game.whiteUsername();
+            String blackUsername = (game.blackUsername() == null) ? "empty" : game.blackUsername();
+
+            formattedList.append("- Game Name: ").append(game.gameName())
+                    .append(", White Username: ").append(whiteUsername)
+                    .append(", Black Username: ").append(blackUsername)
+                    .append(", Game ID: ").append(game.gameID())
+                    .append("\n");
+        }
+
+        return formattedList.toString();
+    }
+
+    public String list() throws ResponseException {
+        ListGameResult result = repl.getServer().listGame(new ListGameRequest(repl.getAuthToken()));
+        return "All Games: \n" + formatGameList(result.games());
     }
 
     public String play(String... params){

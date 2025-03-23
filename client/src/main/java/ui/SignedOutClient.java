@@ -5,7 +5,6 @@ import model.request.LoginRequest;
 import model.request.RegisterRequest;
 import model.result.LoginResult;
 import model.result.RegisterResult;
-import server.ServerFacade;
 
 import java.util.Arrays;
 
