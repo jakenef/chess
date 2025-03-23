@@ -3,9 +3,11 @@ package ui;
 import exception.ResponseException;
 import model.GameData;
 import model.request.CreateGameRequest;
+import model.request.JoinGameRequest;
 import model.request.ListGameRequest;
 import model.request.LogoutRequest;
 import model.result.CreateGameResult;
+import model.result.JoinGameResult;
 import model.result.ListGameResult;
 
 import java.util.ArrayList;
@@ -62,7 +64,14 @@ public class SignedInClient implements ClientInterface{
             String whiteUsername = (game.whiteUsername() == null) ? "empty" : game.whiteUsername();
             String blackUsername = (game.blackUsername() == null) ? "empty" : game.blackUsername();
 
-            gameListStr.append((i + 1)).append(". Game Name: ").append(game.gameName()).append(", White: ").append(whiteUsername).append(", Black: ").append(blackUsername);
+            gameListStr.append((i + 1))
+                    .append(". Game Name: ")
+                    .append(game.gameName())
+                    .append(", White: ")
+                    .append(whiteUsername)
+                    .append(", Black: ")
+                    .append(blackUsername)
+                    .append("\n");
         }
         return gameListStr.toString();
     }
@@ -73,12 +82,23 @@ public class SignedInClient implements ClientInterface{
         return "All Games: \n" + formatGameList(result.games());
     }
 
-    public String join(String... params){
-        return null;
+    public String join(String... params) throws ResponseException {
+        if (params.length != 2){
+            throw new ResponseException(400, "Expected: join <ID> [WHITE/BLACK]");
+        }
+        int index = Integer.parseInt(params[0]) - 1;
+        if (index > gameList.size() - 1 || index < 0){
+            throw new ResponseException(400, "Game ID is incorrect. Use `list` and try again.");
+        }
+        GameData game = gameList.get(index);
+        JoinGameRequest request = new JoinGameRequest(repl.getAuthToken(), params[1].toUpperCase(), game.gameID());
+        JoinGameResult result = repl.getServer().joinGame(request);
+        repl.setState(State.GAMEPLAY);
+        return "Successfully joined game: " + game.gameName();
     }
 
     public String observe(String... params){
-        return null;
+        return "observing...";
     }
 
     @Override
