@@ -2,15 +2,19 @@ package ui;
 
 import exception.ResponseException;
 import model.GameData;
+import model.request.CreateGameRequest;
 import model.request.ListGameRequest;
 import model.request.LogoutRequest;
+import model.result.CreateGameResult;
 import model.result.ListGameResult;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class SignedInClient implements ClientInterface{
     private final Repl repl;
+    private ArrayList<GameData> gameList = null;
 
     public SignedInClient(Repl repl) {
         this.repl = repl;
@@ -26,7 +30,8 @@ public class SignedInClient implements ClientInterface{
                 case "create" -> create(params);
                 case "logout" -> logout();
                 case "list" -> list();
-                case "play" -> play(params);
+                case "join" -> join(params);
+                case "observe" -> observe(params);
                 case "quit" -> "quit";
                 default -> help();
             };
@@ -35,8 +40,12 @@ public class SignedInClient implements ClientInterface{
         }
     }
 
-    public String create(String... params){
-        return null;
+    public String create(String... params) throws ResponseException {
+        if (params.length != 1){
+            throw new ResponseException(400, "Expected: create <GAMENAME>");
+        }
+        CreateGameResult result = repl.getServer().createGame(new CreateGameRequest(repl.getAuthToken(), params[0]));
+        return "Successfully created your game.";
     }
 
     public String logout() throws ResponseException {
@@ -47,28 +56,28 @@ public class SignedInClient implements ClientInterface{
     }
 
     private String formatGameList(List<GameData> games) {
-        StringBuilder formattedList = new StringBuilder();
-
-        for (GameData game : games) {
+        StringBuilder gameListStr = new StringBuilder();
+        for (int i = 0; i < games.size(); i++) {
+            GameData game = games.get(i);
             String whiteUsername = (game.whiteUsername() == null) ? "empty" : game.whiteUsername();
             String blackUsername = (game.blackUsername() == null) ? "empty" : game.blackUsername();
 
-            formattedList.append("- Game Name: ").append(game.gameName())
-                    .append(", White Username: ").append(whiteUsername)
-                    .append(", Black Username: ").append(blackUsername)
-                    .append(", Game ID: ").append(game.gameID())
-                    .append("\n");
+            gameListStr.append((i + 1)).append(". Game Name: ").append(game.gameName()).append(", White: ").append(whiteUsername).append(", Black: ").append(blackUsername);
         }
-
-        return formattedList.toString();
+        return gameListStr.toString();
     }
 
     public String list() throws ResponseException {
         ListGameResult result = repl.getServer().listGame(new ListGameRequest(repl.getAuthToken()));
+        gameList = result.games();
         return "All Games: \n" + formatGameList(result.games());
     }
 
-    public String play(String... params){
+    public String join(String... params){
+        return null;
+    }
+
+    public String observe(String... params){
         return null;
     }
 
