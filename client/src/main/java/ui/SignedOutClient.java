@@ -1,17 +1,53 @@
 package ui;
 
+import exception.ResponseException;
+import model.request.RegisterRequest;
+import model.result.RegisterResult;
+import server.ServerFacade;
+
+import java.util.Arrays;
+
 public class SignedOutClient implements ClientInterface{
+    private final Repl repl;
+
+    public SignedOutClient(Repl repl) {
+        this.repl = repl;
+    }
+
     @Override
     public String eval(String input) {
-        return input;
+        try {
+            var tokens = input.toLowerCase().split(" ");
+            var cmd = (tokens.length > 0) ? tokens[0] : "help";
+            var params = Arrays.copyOfRange(tokens, 1, tokens.length);
+            return switch(cmd) {
+                case "register" -> register(params);
+                //case "login" -> login(params);
+                case "quit" -> "quit";
+                default -> help();
+            };
+        } catch (ResponseException e){
+            return e.getMessage();
+        }
+    }
+
+    public String register(String... params) throws ResponseException {
+        if (params.length != 3){
+            throw new ResponseException(400, "Expected: register <USERNAME> <PASSWORD> <EMAIL>");
+        }
+        RegisterRequest request = new RegisterRequest(params[0], params[1], params[2]);
+        RegisterResult result = repl.getServer().register(request);
+        repl.setAuthToken(result.authToken());
+        repl.setState(State.SIGNED_IN);
+        return "Successfully registered user: " + result.username();
     }
 
     @Override
     public String help() {
         return """
-        \tregister <USERNAME> <PASSWORD> <EMAIL> - to create an account
-        \tlogin <USERNAME> <PASSWORD> - to play chess
-        \tquit - playing chess
-        \thelp - display possible commands""";
+        register <USERNAME> <PASSWORD> <EMAIL> - to create an account
+        login <USERNAME> <PASSWORD> - to play chess
+        quit - playing chess
+        help - display possible commands""";
     }
 }

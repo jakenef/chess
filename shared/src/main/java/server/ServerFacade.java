@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import exception.ResponseException;
 import model.request.*;
 import model.result.*;
+import model.utils.ErrorMessage;
 
 import java.io.*;
 import java.net.*;
@@ -85,13 +86,19 @@ public class ServerFacade {
     private void throwIfNotSuccessful(HttpURLConnection http) throws IOException, ResponseException {
         var status = http.getResponseCode();
         if (!isSuccessful(status)) {
+            String errorMessage = "Unknown error";
+
             try (InputStream respErr = http.getErrorStream()) {
                 if (respErr != null) {
-                    throw ResponseException.fromJson(respErr);
+                    InputStreamReader reader = new InputStreamReader(respErr);
+                    ErrorMessage error = new Gson().fromJson(reader, ErrorMessage.class);
+                    if (error != null) {
+                        errorMessage = error.getMessage();
+                    }
                 }
             }
 
-            throw new ResponseException(status, "other failure: " + status);
+            throw new ResponseException(status, errorMessage);
         }
     }
 

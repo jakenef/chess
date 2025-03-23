@@ -1,24 +1,30 @@
 package ui;
 
+import server.ServerFacade;
+
+import java.util.Arrays;
 import java.util.Scanner;
+import java.util.stream.Collectors;
+
 import static ui.EscapeSequences.*;
 
 public class Repl {
     private ClientInterface client;
-    private final String serverURL;
+    private final ServerFacade server;
     private State state;
+    private String authToken = null;
 
     public Repl(String serverURL) {
-        this.serverURL = serverURL;
+        this.server = new ServerFacade(serverURL);
         this.state = State.SIGNED_OUT;
-        this.client = new SignedOutClient();
+        this.client = new SignedOutClient(this);
     }
 
     public void setState(State newState){
         this.state = newState;
         switch (newState){
-            case SIGNED_OUT -> client = new SignedOutClient();
-            case SIGNED_IN -> client = new SignedInClient();
+            case SIGNED_OUT -> client = new SignedOutClient(this);
+            case SIGNED_IN -> client = new SignedInClient(this);
             case GAMEPLAY -> client = new GameplayClient();
         }
     }
@@ -35,7 +41,10 @@ public class Repl {
 
             try{
                 result = client.eval(line);
-                System.out.print(SET_TEXT_COLOR_BLUE + result);
+                String formatResult = Arrays.stream(result.split("\n"))
+                        .map(mapLine -> "\t" + mapLine)
+                        .collect(Collectors.joining("\n"));
+                System.out.print(SET_TEXT_COLOR_BLUE + formatResult);
             } catch (Throwable e){
                 var msg = e.toString();
                 System.out.print(msg);
@@ -44,11 +53,19 @@ public class Repl {
         System.out.println();
     }
 
-    private void printPrompt(){
-        System.out.print("\n" + RESET_TEXT_COLOR + state + ">>> " + SET_TEXT_COLOR_GREEN);
+    public ServerFacade getServer(){
+        return this.server;
     }
 
-    public String getServerURL(){
-        return serverURL;
+    public String getAuthToken(){
+        return this.authToken;
+    }
+
+    public void setAuthToken(String authToken){
+        this.authToken = authToken;
+    }
+
+    private void printPrompt(){
+        System.out.print("\n" + RESET_TEXT_COLOR + state + ">>> " + SET_TEXT_COLOR_GREEN);
     }
 }
