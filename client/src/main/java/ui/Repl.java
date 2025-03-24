@@ -1,5 +1,7 @@
 package ui;
 
+import chess.ChessGame;
+import model.GameData;
 import server.ServerFacade;
 
 import java.util.Arrays;
@@ -13,6 +15,7 @@ public class Repl {
     private final ServerFacade server;
     private State state;
     private String authToken = null;
+    private ChessGame.TeamColor joinedAsTeamColor = null;
 
     public Repl(String serverURL) {
         this.server = new ServerFacade(serverURL);
