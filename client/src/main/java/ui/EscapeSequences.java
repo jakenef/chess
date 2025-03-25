@@ -63,7 +63,7 @@ public class EscapeSequences {
 
     public static String moveCursorToLocation(int x, int y) { return UNICODE_ESCAPE + "[" + y + ";" + x + "H"; }
 
-    public static final String DARK_SQUARE = "\u001B[48;5;240m";  // Dark gray
-    public static final String LIGHT_SQUARE = "\u001B[48;5;250m"; // Light gray
+    public static final String DARK_SQUARE = "\u001B[48;5;16m";  // Dark gray
+    public static final String LIGHT_SQUARE = "\u001B[48;5;240m"; // Light gray
     public static final String RESET = "\u001B[0m";
 }

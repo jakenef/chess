@@ -29,22 +29,22 @@ public class Repl {
         switch (newState){
             case SIGNED_OUT -> {
                 client = new SignedOutClient(this);
-                System.out.println(SET_TEXT_COLOR_BLUE + client.help());
+                System.out.println(RESET_TEXT_COLOR + client.help());
             }
             case SIGNED_IN -> {
                 client = new SignedInClient(this);
-                System.out.println(SET_TEXT_COLOR_BLUE + client.help());
+                System.out.println(RESET_TEXT_COLOR + client.help());
             }
             case GAMEPLAY -> {
                 client = new GameplayClient(this);
-                System.out.println(SET_TEXT_COLOR_BLUE + client.help());
+                System.out.println(RESET_TEXT_COLOR + client.help());
             }
         }
     }
 
     public void run(){
         System.out.println("♕ Welcome to my CS240 Chess Client: ");
-        System.out.println(SET_TEXT_COLOR_BLUE + client.help());
+        System.out.println(client.help());
 
         Scanner scanner = new Scanner(System.in);
         var result = "";
@@ -57,7 +57,11 @@ public class Repl {
                 String formatResult = Arrays.stream(result.split("\n"))
                         .map(mapLine -> "\t" + mapLine)
                         .collect(Collectors.joining("\n"));
-                System.out.print(SET_TEXT_COLOR_YELLOW + formatResult);
+                if (state == State.GAMEPLAY){
+                    System.out.print(RESET_TEXT_COLOR + formatResult);
+                } else {
+                    System.out.print(SET_TEXT_COLOR_BLUE + formatResult);
+                }
             } catch (Throwable e){
                 var msg = e.toString();
                 System.out.print(msg);
@@ -95,6 +99,6 @@ public class Repl {
     }
 
     private void printPrompt(){
-        System.out.print("\n" + RESET_TEXT_COLOR + state + ">>> " + SET_TEXT_COLOR_GREEN);
+        System.out.print("\n" + SET_TEXT_COLOR_YELLOW + state + ">>> " + SET_TEXT_COLOR_GREEN);
     }
 }

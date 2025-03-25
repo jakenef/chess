@@ -59,9 +59,9 @@ public class GameplayClient implements ClientInterface{
             rowOrder = new int[]{1, 2, 3, 4, 5, 6, 7, 8};
         }
 
-        boardString.append("   ");
+        boardString.append("  ");
         for (String col : colLabels) {
-            boardString.append(" ").append(col).append(" ");
+            boardString.append("  ").append(col).append("  ");
         }
         boardString.append("\n");
 
@@ -80,9 +80,9 @@ public class GameplayClient implements ClientInterface{
             boardString.append(" ").append(row).append("\n");
         }
 
-        boardString.append("   ");
+        boardString.append("  ");
         for (String col : colLabels) {
-            boardString.append(" ").append(col).append(" ");
+            boardString.append("  ").append(col).append("  ");
         }
         boardString.append("\n");
 
