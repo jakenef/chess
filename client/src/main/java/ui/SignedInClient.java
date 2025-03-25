@@ -124,6 +124,10 @@ public class SignedInClient implements ClientInterface{
         if (index > gameList.size() - 1 || index < 0){
             throw new ResponseException(400, "Game ID is incorrect. Use `list` and try again.");
         }
+        GameData game = gameList.get(index);
+        repl.setJoinedGameData(game);
+        repl.setJoinedAsTeamColor(ChessGame.TeamColor.WHITE);
+        repl.setState(State.GAMEPLAY);
         return "observing game ID: " + (index + 1);
     }
 

@@ -71,7 +71,7 @@ public class GameplayClient implements ClientInterface{
 
         boardString.append("  ");
         for (String col : colLabels) {
-            boardString.append("  ").append(col).append("  ");
+            boardString.append(" ").append(col).append(" ");
         }
         boardString.append("\n");
 
@@ -92,14 +92,14 @@ public class GameplayClient implements ClientInterface{
 
                 String pieceChar = (piece == null) ? EMPTY : getUnicodeForPiece(piece);
 
-                boardString.append(squareColor).append(" ").append(pieceChar).append(" ").append(RESET);
+                boardString.append(squareColor).append(pieceChar).append(RESET);
             }
             boardString.append(" ").append(row).append("\n");
         }
 
         boardString.append("  ");
         for (String col : colLabels) {
-            boardString.append("  ").append(col).append("  ");
+            boardString.append(" ").append(col).append(" ");
         }
         boardString.append("\n");
 
