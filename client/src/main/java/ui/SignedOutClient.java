@@ -48,7 +48,12 @@ public class SignedOutClient implements ClientInterface{
             throw new ResponseException(400, "Expected: login <USERNAME> <PASSWORD>");
         }
         LoginRequest request = new LoginRequest(params[0], params[1]);
-        LoginResult result = repl.getServer().login(request);
+        LoginResult result = null;
+        try {
+            result = repl.getServer().login(request);
+        } catch (ResponseException e) {
+            throw new ResponseException(e.StatusCode(), "Username or password incorrect. Try again.");
+        }
         repl.setAuthToken(result.authToken());
         repl.setState(State.SIGNED_IN);
         return "Successfully signed in user: " + result.username();

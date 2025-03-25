@@ -58,17 +58,6 @@ public class ChessGame {
     }
 
     /**
-     * Enum identifying the 2 possible teams in a chess game
-     */
-    public enum TeamColor {
-        WHITE,
-        BLACK;
-        public TeamColor opposite() {
-            return this == BLACK ? WHITE : BLACK;
-        }
-    }
-
-    /**
      * Gets a valid moves for a piece at the given location
      *
      * @param startPosition the piece to get valid moves for
@@ -240,5 +229,28 @@ public class ChessGame {
             allTeamMoveList.addAll(iteratorPiece.pieceMoves(board, pos));
         }
         return allTeamMoveList;
+    }
+
+    /**
+     * Enum identifying the 2 possible teams in a chess game
+     */
+    public enum TeamColor {
+        WHITE,
+        BLACK;
+        public TeamColor opposite() {
+            return this == BLACK ? WHITE : BLACK;
+        }
+    }
+
+    public static TeamColor fromString(String color) {
+        if (color == null) {
+            throw new IllegalArgumentException("Color cannot be null");
+        }
+
+        try {
+            return TeamColor.valueOf(color.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Invalid color: " + color);
+        }
     }
 }

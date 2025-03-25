@@ -1,5 +1,6 @@
 package ui;
 
+import chess.ChessGame;
 import exception.ResponseException;
 import model.GameData;
 import model.request.CreateGameRequest;
@@ -7,7 +8,6 @@ import model.request.JoinGameRequest;
 import model.request.ListGameRequest;
 import model.request.LogoutRequest;
 import model.result.CreateGameResult;
-import model.result.JoinGameResult;
 import model.result.ListGameResult;
 
 import java.util.ArrayList;
@@ -102,7 +102,9 @@ public class SignedInClient implements ClientInterface{
         }
         GameData game = gameList.get(index);
         JoinGameRequest request = new JoinGameRequest(repl.getAuthToken(), params[1].toUpperCase(), game.gameID());
-        JoinGameResult result = repl.getServer().joinGame(request);
+        repl.getServer().joinGame(request);
+        repl.setJoinedGameData(game);
+        repl.setJoinedAsTeamColor(ChessGame.fromString(params[1].toUpperCase()));
         repl.setState(State.GAMEPLAY);
         return "Successfully joined game: " + game.gameName();
     }

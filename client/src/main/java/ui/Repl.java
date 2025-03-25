@@ -44,7 +44,7 @@ public class Repl {
 
     public void run(){
         System.out.println("♕ Welcome to my CS240 Chess Client: ");
-        System.out.println(client.help());
+        System.out.println(SET_TEXT_COLOR_BLUE + client.help());
 
         Scanner scanner = new Scanner(System.in);
         var result = "";
@@ -57,7 +57,7 @@ public class Repl {
                 String formatResult = Arrays.stream(result.split("\n"))
                         .map(mapLine -> "\t" + mapLine)
                         .collect(Collectors.joining("\n"));
-                System.out.print(SET_TEXT_COLOR_BLUE + formatResult);
+                System.out.print(SET_TEXT_COLOR_YELLOW + formatResult);
             } catch (Throwable e){
                 var msg = e.toString();
                 System.out.print(msg);
