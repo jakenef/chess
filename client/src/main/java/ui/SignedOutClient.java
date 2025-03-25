@@ -52,7 +52,7 @@ public class SignedOutClient implements ClientInterface{
         try {
             result = repl.getServer().login(request);
         } catch (ResponseException e) {
-            throw new ResponseException(e.StatusCode(), "Username or password incorrect. Try again.");
+            throw new ResponseException(e.statusCode(), "Username or password incorrect. Try again.");
         }
         repl.setAuthToken(result.authToken());
         repl.setState(State.SIGNED_IN);

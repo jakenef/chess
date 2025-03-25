@@ -96,7 +96,9 @@ public class GameplayClient implements ClientInterface{
      * @return The Unicode character for the piece.
      */
     private String getUnicodeForPiece(ChessPiece piece) {
-        if (piece == null) return " ";
+        if (piece == null) {
+            return " ";
+        }
         boolean isWhite = piece.getTeamColor() == ChessGame.TeamColor.WHITE;
 
         return switch (piece.getPieceType()) {
