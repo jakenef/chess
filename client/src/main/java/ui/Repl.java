@@ -27,17 +27,11 @@ public class Repl {
     public void setState(State newState){
         this.state = newState;
         switch (newState){
-            case SIGNED_OUT -> {
-                client = new SignedOutClient(this);
-                System.out.println(RESET_TEXT_COLOR + client.help());
-            }
-            case SIGNED_IN -> {
-                client = new SignedInClient(this);
-                System.out.println(RESET_TEXT_COLOR + client.help());
-            }
+            case SIGNED_OUT -> client = new SignedOutClient(this);
+            case SIGNED_IN -> client = new SignedInClient(this);
             case GAMEPLAY -> {
                 client = new GameplayClient(this);
-                System.out.println(RESET_TEXT_COLOR + client.help());
+                System.out.println(RESET_TEXT_COLOR + ((GameplayClient) client).printBoard());
             }
         }
     }
@@ -47,6 +41,7 @@ public class Repl {
         System.out.println(client.help());
 
         Scanner scanner = new Scanner(System.in);
+        State previousState = state;
         var result = "";
         while(!result.equals("quit")){
             printPrompt();
@@ -54,20 +49,25 @@ public class Repl {
 
             try{
                 result = client.eval(line);
-                String formatResult = Arrays.stream(result.split("\n"))
-                        .map(mapLine -> "\t" + mapLine)
-                        .collect(Collectors.joining("\n"));
-                if (state == State.GAMEPLAY){
-                    System.out.print(RESET_TEXT_COLOR + formatResult);
-                } else {
-                    System.out.print(SET_TEXT_COLOR_BLUE + formatResult);
+                String formatResult = formatResult(result);
+                System.out.print(SET_TEXT_COLOR_BLUE + formatResult);
+                if (state != previousState) {
+                    System.out.print("\n" + SET_TEXT_COLOR_BLUE + formatResult(client.help()));
+                    previousState = state;
                 }
+                System.out.println();
             } catch (Throwable e){
                 var msg = e.toString();
                 System.out.print(msg);
             }
         }
         System.out.println();
+    }
+
+    public String formatResult(String result){
+        return Arrays.stream(result.split("\n"))
+                .map(mapLine -> "\t" + mapLine)
+                .collect(Collectors.joining("\n"));
     }
 
     public ServerFacade getServer(){

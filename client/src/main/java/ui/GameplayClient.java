@@ -27,6 +27,8 @@ public class GameplayClient implements ClientInterface{
                 throw new ResponseException(400, "Stubbed out for next phase");
             }
             return switch(cmd) {
+                case "leave" -> leave();
+                case "print" -> printBoard();
                 case "quit" -> "quit";
                 default -> help();
             };
@@ -35,9 +37,15 @@ public class GameplayClient implements ClientInterface{
         }
     }
 
+    public String leave(){
+        repl.setState(State.SIGNED_IN);
+        return "Successfully left gameplay.";
+    }
+
     @Override
     public String help() {
-        return printBoard() + """
+        return """
+        leave - return to SIGNED_IN mode
         help - display this message""";
     }
 
@@ -59,6 +67,8 @@ public class GameplayClient implements ClientInterface{
             rowOrder = new int[]{1, 2, 3, 4, 5, 6, 7, 8};
         }
 
+        boolean isFlipped = !isWhite;
+
         boardString.append("  ");
         for (String col : colLabels) {
             boardString.append("  ").append(col).append("  ");
@@ -71,7 +81,14 @@ public class GameplayClient implements ClientInterface{
                 ChessPosition pos = new ChessPosition(row, isWhite ? col + 1 : 8 - col);
                 ChessPiece piece = board.getPiece(pos);
 
-                String squareColor = ((row + col) % 2 == 0) ? DARK_SQUARE : LIGHT_SQUARE;
+                boolean isLightSquare;
+                if (isFlipped) {
+                    isLightSquare = (row + col) % 2 != 0;
+                } else {
+                    isLightSquare = (row + col) % 2 == 0;
+                }
+
+                String squareColor = isLightSquare ? LIGHT_SQUARE : DARK_SQUARE;
 
                 String pieceChar = (piece == null) ? EMPTY : getUnicodeForPiece(piece);
 
@@ -102,12 +119,12 @@ public class GameplayClient implements ClientInterface{
         boolean isWhite = piece.getTeamColor() == ChessGame.TeamColor.WHITE;
 
         return switch (piece.getPieceType()) {
-            case KING -> isWhite ? WHITE_KING : BLACK_KING;
-            case QUEEN -> isWhite ? WHITE_QUEEN : BLACK_QUEEN;
-            case ROOK -> isWhite ? WHITE_ROOK : BLACK_ROOK;
-            case BISHOP -> isWhite ? WHITE_BISHOP : BLACK_BISHOP;
-            case KNIGHT -> isWhite ? WHITE_KNIGHT : BLACK_KNIGHT;
-            case PAWN -> isWhite ? WHITE_PAWN : BLACK_PAWN;
+            case KING -> isWhite ? BLACK_KING : WHITE_KING;
+            case QUEEN -> isWhite ? BLACK_QUEEN : WHITE_QUEEN;
+            case ROOK -> isWhite ? BLACK_ROOK : WHITE_ROOK;
+            case BISHOP -> isWhite ? BLACK_BISHOP : WHITE_BISHOP;
+            case KNIGHT -> isWhite ? BLACK_KNIGHT : WHITE_KNIGHT;
+            case PAWN -> isWhite ? BLACK_PAWN : WHITE_PAWN;
         };
     }
 }
