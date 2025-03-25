@@ -15,7 +15,8 @@ public class Repl {
     private final ServerFacade server;
     private State state;
     private String authToken = null;
-    private ChessGame.TeamColor joinedAsTeamColor = null;
+    private GameData joinedGameData;
+    private ChessGame.TeamColor joinedAsTeamColor;
 
     public Repl(String serverURL) {
         this.server = new ServerFacade(serverURL);
@@ -26,9 +27,18 @@ public class Repl {
     public void setState(State newState){
         this.state = newState;
         switch (newState){
-            case SIGNED_OUT -> client = new SignedOutClient(this);
-            case SIGNED_IN -> client = new SignedInClient(this);
-            case GAMEPLAY -> client = new GameplayClient();
+            case SIGNED_OUT -> {
+                client = new SignedOutClient(this);
+                System.out.println(SET_TEXT_COLOR_BLUE + client.help());
+            }
+            case SIGNED_IN -> {
+                client = new SignedInClient(this);
+                System.out.println(SET_TEXT_COLOR_BLUE + client.help());
+            }
+            case GAMEPLAY -> {
+                client = new GameplayClient(this);
+                System.out.println(SET_TEXT_COLOR_BLUE + client.help());
+            }
         }
     }
 
@@ -66,6 +76,22 @@ public class Repl {
 
     public void setAuthToken(String authToken){
         this.authToken = authToken;
+    }
+
+    public ChessGame.TeamColor getJoinedAsTeamColor(){
+        return this.joinedAsTeamColor;
+    }
+
+    public void setJoinedAsTeamColor(ChessGame.TeamColor teamColor){
+        this.joinedAsTeamColor = teamColor;
+    }
+
+    public GameData getJoinedGameData() {
+        return joinedGameData;
+    }
+
+    public void setJoinedGameData(GameData joinedGameData) {
+        this.joinedGameData = joinedGameData;
     }
 
     private void printPrompt(){

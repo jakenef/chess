@@ -111,6 +111,29 @@ class GameServiceTest {
     }
 
     @Test
+    void joinGameAsUserWhoPreviouslyJoined(){
+        try{
+            LoginRequest logReq = new LoginRequest("testName", "testPassword");
+            LoginResult logRes = userService.login(logReq);
+            CreateGameRequest creReq = new CreateGameRequest(logRes.authToken(), "testGame");
+            CreateGameResult creRes = gameService.createGame(creReq);
+
+            JoinGameRequest joinReq = new JoinGameRequest(logRes.authToken(), "WHITE", creRes.gameID());
+            gameService.joinGame(joinReq);
+
+            assertFalse(gameDA.getGame(creRes.gameID()).whiteUsername().isEmpty());
+
+            userService.logout(new LogoutRequest(logRes.authToken()));
+            LoginResult newLogRes = userService.login(logReq);
+
+            JoinGameRequest newJoinReq = new JoinGameRequest(newLogRes.authToken(), "WHITE", creRes.gameID());
+            //gameService.joinGame(newJoinReq);
+        } catch (DataAccessException e){
+            fail(e.getMessage());
+        }
+    }
+
+    @Test
     void joinGameNegative(){
         try{
             LoginRequest logReq = new LoginRequest("testName", "testPassword");
