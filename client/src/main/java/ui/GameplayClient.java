@@ -45,6 +45,7 @@ public class GameplayClient implements ClientInterface{
     @Override
     public String help() {
         return """
+        print - redraw board
         leave - return to SIGNED_IN mode
         help - display this message""";
     }
