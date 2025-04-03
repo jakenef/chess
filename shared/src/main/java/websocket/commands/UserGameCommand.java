@@ -29,6 +29,8 @@ public class UserGameCommand {
         RESIGN
     }
 
+    public enum Role { PLAYER, OBSERVER }
+
     public CommandType getCommandType() {
         return commandType;
     }
