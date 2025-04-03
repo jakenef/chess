@@ -4,6 +4,7 @@ import dataaccess.*;
 import dataaccess.auth.AuthDataAccess;
 import dataaccess.game.GameDataAccess;
 import dataaccess.user.UserDataAccess;
+import server.websocket.WebSocketHandler;
 import service.ClearService;
 import service.GameService;
 import service.UserService;
@@ -18,6 +19,7 @@ public class Server {
     private final ListGamesHandler listGamesHandler;
     private final CreateGameHandler createGameHandler;
     private final JoinGameHandler joinGameHandler;
+    private final WebSocketHandler webSocketHandler;
 
     public Server() {
         GameDataAccess gameDA = DataAccessFactory.createGameDataAccess();
@@ -35,6 +37,7 @@ public class Server {
         this.listGamesHandler = new ListGamesHandler(gameService);
         this.createGameHandler = new CreateGameHandler(gameService);
         this.joinGameHandler = new JoinGameHandler(gameService);
+        this.webSocketHandler = new WebSocketHandler(userService, gameService);
         try {
             DatabaseManager.configureDatabase();
             System.out.println("Database configured successfully!");
