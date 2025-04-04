@@ -39,6 +39,7 @@ public class SignedOutClient implements ClientInterface{
         RegisterRequest request = new RegisterRequest(params[0], params[1], params[2]);
         RegisterResult result = repl.getServer().register(request);
         repl.setAuthToken(result.authToken());
+        repl.setUsername(result.username());
         repl.setState(State.SIGNED_IN);
         return "Successfully registered user: " + result.username();
     }
@@ -48,7 +49,7 @@ public class SignedOutClient implements ClientInterface{
             throw new ResponseException(400, "Expected: login <USERNAME> <PASSWORD>");
         }
         LoginRequest request = new LoginRequest(params[0], params[1]);
-        LoginResult result = null;
+        LoginResult result;
         try {
             result = repl.getServer().login(request);
         } catch (ResponseException e) {

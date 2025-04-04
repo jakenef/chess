@@ -9,6 +9,7 @@ import model.request.ListGameRequest;
 import model.request.LogoutRequest;
 import model.result.CreateGameResult;
 import model.result.ListGameResult;
+import websocketfacade.WebSocketFacade;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -106,6 +107,11 @@ public class SignedInClient implements ClientInterface{
         repl.setJoinedGameData(game);
         repl.setJoinedAsTeamColor(ChessGame.fromString(params[1].toUpperCase()));
         repl.setState(State.GAMEPLAY);
+
+        repl.setWs();
+        WebSocketFacade ws = repl.getWs();
+        ws.connectAsPlayer(game, repl.getUsername(), ChessGame.fromString(params[1].toUpperCase()));
+
         return "Successfully joined game: " + game.gameName();
     }
 

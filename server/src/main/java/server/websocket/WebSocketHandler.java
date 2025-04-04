@@ -2,13 +2,17 @@ package server.websocket;
 
 import com.google.gson.Gson;
 import exception.ResponseException;
+import model.GameData;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 import service.GameService;
 import service.UserService;
 import websocket.commands.UserGameCommand;
+import websocket.messages.LoadGameMessage;
 import websocket.messages.NotificationMessage;
+
+import java.io.IOException;
 
 @WebSocket
 public class WebSocketHandler {
@@ -22,7 +26,7 @@ public class WebSocketHandler {
     }
 
     @OnWebSocketMessage
-    public void onMessage(Session session, String message) throws ResponseException {
+    public void onMessage(Session session, String message) throws ResponseException, IOException {
         UserGameCommand command = new Gson().fromJson(message, UserGameCommand.class);
         switch (command.getCommandType()) {
             case CONNECT -> {
@@ -37,17 +41,20 @@ public class WebSocketHandler {
         }
     }
 
-    private void connectAsPlayer(UserGameCommand command, Session session){
-        connections.add(command.getAuthToken(), session);
-        String name = command.getAuthToken(); // how to get from authtoken to name from here?
-        String gameName = command.getGameID().toString(); // same ^
-        NotificationMessage notificationMessage = new NotificationMessage(name + " has connected as [color]");
+    private void connectAsPlayer(UserGameCommand command, Session session) throws IOException {
+        connections.add(command.getUsername(), session);
+        LoadGameMessage loadGameMessage = new LoadGameMessage(command.getGameData());
+        Connection clientConn = connections.get(command.getUsername());
+        clientConn.send(loadGameMessage.toString());
+        NotificationMessage notificationMessage = new NotificationMessage(command.getUsername() +
+                " has connected as " + command.getPlayerJoinColor().toString());
+        connections.broadcast(command.getUsername(), notificationMessage);
     }
 
     private void connectAsObserver(UserGameCommand command, Session session){
         connections.add(command.getAuthToken(), session);
         String name = command.getAuthToken();
         String gameName = command.getGameID().toString();
-        NotificationMessage notificationMessage = new NotificationMessage(name + " has connected as [color]");
+        NotificationMessage notificationMessage = new NotificationMessage(name + " has connected as an observer");
     }
 }

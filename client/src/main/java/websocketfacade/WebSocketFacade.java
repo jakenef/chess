@@ -1,8 +1,11 @@
 package websocketfacade;
 
+import chess.ChessGame;
 import com.google.gson.Gson;
 import exception.ResponseException;
+import model.GameData;
 import ui.Repl;
+import websocket.commands.UserGameCommand;
 import websocket.messages.NotificationMessage;
 
 import javax.websocket.*;
@@ -10,7 +13,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-public class WebSocketFacade {
+public class WebSocketFacade extends Endpoint {
     Session session;
     Repl notificationRepl;
 
@@ -32,6 +35,21 @@ public class WebSocketFacade {
             });
 
         } catch (DeploymentException | IOException | URISyntaxException e) {
+            throw new ResponseException(500, e.getMessage());
+        }
+    }
+
+    @Override
+    public void onOpen(Session session, EndpointConfig endpointConfig) {
+    }
+
+    public void connectAsPlayer(GameData gameData, String username, ChessGame.TeamColor teamColor) throws ResponseException {
+        try {
+            UserGameCommand connectCommand = new UserGameCommand(UserGameCommand.CommandType.CONNECT,
+                    username, gameData, UserGameCommand.Role.PLAYER, teamColor);
+            System.out.println("Session open: " + session.isOpen());
+            this.session.getBasicRemote().sendText(new Gson().toJson(connectCommand));
+        } catch (IOException e) {
             throw new ResponseException(500, e.getMessage());
         }
     }

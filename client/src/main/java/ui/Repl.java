@@ -1,9 +1,11 @@
 package ui;
 
 import chess.ChessGame;
+import exception.ResponseException;
 import model.GameData;
 import serverfacade.ServerFacade;
 import websocket.messages.NotificationMessage;
+import websocketfacade.WebSocketFacade;
 
 import java.util.Arrays;
 import java.util.Scanner;
@@ -14,13 +16,17 @@ import static ui.EscapeSequences.*;
 public class Repl {
     private ClientInterface client;
     private final ServerFacade server;
+    private final String serverURL;
+    private WebSocketFacade ws;
     private State state;
     private String authToken = null;
+    private String username = null;
     private GameData joinedGameData;
     private ChessGame.TeamColor joinedAsTeamColor;
 
     public Repl(String serverURL) {
         this.server = new ServerFacade(serverURL);
+        this.serverURL = serverURL;
         this.state = State.SIGNED_OUT;
         this.client = new SignedOutClient(this);
     }
@@ -73,6 +79,22 @@ public class Repl {
 
     public ServerFacade getServer(){
         return this.server;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public WebSocketFacade getWs() {
+        return ws;
+    }
+
+    public void setWs() throws ResponseException {
+        this.ws = new WebSocketFacade(serverURL, this);
     }
 
     public String getAuthToken(){

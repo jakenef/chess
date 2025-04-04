@@ -1,6 +1,7 @@
 package websocket.commands;
 
 import chess.ChessGame;
+import model.GameData;
 
 import java.util.Objects;
 
@@ -21,21 +22,32 @@ public class UserGameCommand {
 
     private final ChessGame.TeamColor playerJoinColor;
 
-    public UserGameCommand(CommandType commandType, String authToken, Integer gameID,
-                           Role role, ChessGame.TeamColor playerJoinColor) {
+    private final String username;
+
+    private final GameData gameData;
+
+    public UserGameCommand(CommandType commandType, String authToken, Integer gameID, String username,
+                           Role role, ChessGame.TeamColor playerJoinColor, GameData gameData) {
         this.commandType = commandType;
         this.authToken = authToken;
         this.gameID = gameID;
+        this.username = username;
         this.role = role;
         this.playerJoinColor = (role == Role.PLAYER) ? playerJoinColor : null;
+        this.gameData = gameData;
+    }
+
+    public UserGameCommand(CommandType commandType, String username,
+                           GameData gameData, Role role, ChessGame.TeamColor playerJoinColor){
+        this(commandType, null, null, username, role, playerJoinColor, gameData);
     }
 
     public UserGameCommand(CommandType commandType, String authToken, Integer gameID) {
-        this(commandType, authToken, gameID, null, null);
+        this(commandType, authToken, gameID, null, null, null, null);
     }
 
-    public UserGameCommand(CommandType commandType, String authToken, Integer gameID, Role role) {
-        this(commandType, authToken, gameID, role, null);
+    public UserGameCommand(CommandType commandType, String authToken, Integer gameID, String username, Role role) {
+        this(commandType, authToken, gameID, username, role, null, null);
     }
 
     public enum CommandType {
@@ -61,6 +73,18 @@ public class UserGameCommand {
 
     public Role getRole() {
         return role;
+    }
+
+    public GameData getGameData() {
+        return gameData;
+    }
+
+    public ChessGame.TeamColor getPlayerJoinColor() {
+        return playerJoinColor;
+    }
+
+    public String getUsername() {
+        return username;
     }
 
     @Override

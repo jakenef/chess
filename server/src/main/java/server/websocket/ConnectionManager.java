@@ -19,6 +19,10 @@ public class ConnectionManager {
         connections.remove(clientName);
     }
 
+    public Connection get(String clientName) {
+        return connections.get(clientName);
+    }
+
     public void broadcast(String excludeClientName, ServerMessage serverMessage) throws IOException {
         var removeList = new ArrayList<Connection>();
         for (Connection iterConnection : connections.values()) {
