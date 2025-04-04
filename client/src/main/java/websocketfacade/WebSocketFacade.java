@@ -41,14 +41,13 @@ public class WebSocketFacade extends Endpoint {
 
     @Override
     public void onOpen(Session session, EndpointConfig endpointConfig) {
+        System.out.println("WebSocket opened");
     }
 
-    public void connectAsPlayer(GameData gameData, String username, ChessGame.TeamColor teamColor) throws ResponseException {
+    public void connectAsPlayer(String authToken, int gameID) throws ResponseException {
+        UserGameCommand userGameCommand = new UserGameCommand(UserGameCommand.CommandType.CONNECT, authToken, gameID);
         try {
-            UserGameCommand connectCommand = new UserGameCommand(UserGameCommand.CommandType.CONNECT,
-                    username, gameData, UserGameCommand.Role.PLAYER, teamColor);
-            System.out.println("Session open: " + session.isOpen());
-            this.session.getBasicRemote().sendText(new Gson().toJson(connectCommand));
+            session.getBasicRemote().sendText(new Gson().toJson(userGameCommand));
         } catch (IOException e) {
             throw new ResponseException(500, e.getMessage());
         }

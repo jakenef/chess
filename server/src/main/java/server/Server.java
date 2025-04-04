@@ -37,7 +37,8 @@ public class Server {
         this.listGamesHandler = new ListGamesHandler(gameService);
         this.createGameHandler = new CreateGameHandler(gameService);
         this.joinGameHandler = new JoinGameHandler(gameService);
-        this.webSocketHandler = new WebSocketHandler(userService, gameService);
+        this.webSocketHandler = new WebSocketHandler(userDA, gameDA, authDA);
+
         try {
             DatabaseManager.configureDatabase();
             System.out.println("Database configured successfully!");

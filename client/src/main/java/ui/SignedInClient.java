@@ -110,7 +110,7 @@ public class SignedInClient implements ClientInterface{
 
         repl.setWs();
         WebSocketFacade ws = repl.getWs();
-        ws.connectAsPlayer(game, repl.getUsername(), ChessGame.fromString(params[1].toUpperCase()));
+        ws.connectAsPlayer(repl.getAuthToken(), game.gameID());
 
         return "Successfully joined game: " + game.gameName();
     }
