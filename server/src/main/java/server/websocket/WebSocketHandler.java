@@ -1,6 +1,8 @@
 package server.websocket;
 
+import chess.ChessGame;
 import com.google.gson.Gson;
+import dataaccess.DataAccessException;
 import dataaccess.auth.AuthDataAccess;
 import dataaccess.game.GameDataAccess;
 import dataaccess.user.UserDataAccess;
@@ -30,42 +32,82 @@ public class WebSocketHandler {
     }
 
     @OnWebSocketMessage
-    public void onMessage(Session session, String message) throws IOException {
+    public void onMessage(Session session, String message) {
         UserGameCommand command = new Gson().fromJson(message, UserGameCommand.class);
-        switch (command.getCommandType()) {
-            case CONNECT -> {
-                if (isPlayer(command)) {
-                    connectAsPlayer(command, session);
-                } else {
-                    connectAsObserver(command, session);
+        try {
+            switch (command.getCommandType()) {
+                case CONNECT -> {
+                    if (isPlayer(command)) {
+                        connectAsPlayer(command, session);
+                    } else {
+                        connectAsObserver(command, session);
+                    }
                 }
             }
+        } catch (DataAccessException | IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
-    private void connectAsPlayer(UserGameCommand command, Session session) throws IOException {
-        connections.add(command.getUsername(), session);
-        LoadGameMessage loadGameMessage = new LoadGameMessage(command.getGameData());
-        Connection clientConn = connections.get(command.getUsername());
+    private void connectAsPlayer(UserGameCommand command, Session session) throws IOException, DataAccessException {
+        GameConnectionManager gameConnManager = getGameConnManager(command);
+        String rootClientUsername = getUsername(command);
+        gameConnManager.add(rootClientUsername, session);
+
+        LoadGameMessage loadGameMessage = new LoadGameMessage(getGameData(command));
+        Connection clientConn = gameConnManager.get(rootClientUsername);
         clientConn.send(loadGameMessage.toString());
-        NotificationMessage notificationMessage = new NotificationMessage(command.getUsername() +
-                " has connected as " + command.getPlayerJoinColor().toString());
-        connections.broadcast(command.getUsername(), notificationMessage);
+
+        NotificationMessage notificationMessage = new NotificationMessage(rootClientUsername +
+                " has connected as " + getPlayerJoinColor(command));
+        gameConnManager.broadcast(rootClientUsername, notificationMessage);
     }
 
-    private void connectAsObserver(UserGameCommand command, Session session){
-        connections.add(command.getAuthToken(), session);
-        String name = command.getAuthToken();
-        String gameName = command.getGameID().toString();
-        NotificationMessage notificationMessage = new NotificationMessage(name + " has connected as an observer");
+    private void connectAsObserver(UserGameCommand command, Session session) throws DataAccessException, IOException {
+        GameConnectionManager gameConnManager = getGameConnManager(command);
+        String rootClientUsername = getUsername(command);
+        gameConnManager.add(rootClientUsername, session);
+
+        LoadGameMessage loadGameMessage = new LoadGameMessage(getGameData(command));
+        Connection clientConn = gameConnManager.get(rootClientUsername);
+        clientConn.send(loadGameMessage.toString());
+
+        NotificationMessage notificationMessage = new NotificationMessage(rootClientUsername +
+                " has connected as an observer");
+        gameConnManager.broadcast(rootClientUsername, notificationMessage);
     }
 
-    private String getUsername(UserGameCommand command){
+    private String getUsername(UserGameCommand command) throws DataAccessException {
         return authDA.getAuth(command.getAuthToken()).username();
     }
 
-    private boolean isPlayer(UserGameCommand command) {
+    private GameData getGameData(UserGameCommand command) throws DataAccessException {
+        return gameDA.getGame(command.getGameID());
+    }
+
+    private boolean isPlayer(UserGameCommand command) throws DataAccessException {
         GameData gameData = gameDA.getGame(command.getGameID());
-        if(gameData.)
+        return getUsername(command).equals(gameData.whiteUsername())
+                || getUsername(command).equals(gameData.blackUsername());
+    }
+
+    private String getPlayerJoinColor(UserGameCommand command) throws DataAccessException {
+        GameData gameData = gameDA.getGame(command.getGameID());
+        if (getUsername(command).equals(gameData.whiteUsername())){
+            return "WHITE";
+        } else {
+            return "BLACK";
+        }
+    }
+
+    private GameConnectionManager getGameConnManager(UserGameCommand command){
+        GameConnectionManager gameConnectionManager = gameCMList.get(command.getGameID());
+        if (gameConnectionManager != null){
+            return gameConnectionManager;
+        } else {
+            gameConnectionManager = new GameConnectionManager();
+            gameCMList.put(command.getGameID(), gameConnectionManager);
+            return gameConnectionManager;
+        }
     }
 }
