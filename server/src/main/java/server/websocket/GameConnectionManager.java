@@ -1,5 +1,6 @@
 package server.websocket;
 
+import com.google.gson.Gson;
 import org.eclipse.jetty.websocket.api.Session;
 import websocket.messages.ServerMessage;
 
@@ -28,7 +29,7 @@ public class GameConnectionManager {
         for (Connection iterConnection : connections.values()) {
             if (iterConnection.session.isOpen()) {
                 if (!iterConnection.clientName.equals(excludeClientName)) {
-                    iterConnection.send(serverMessage.toString());
+                    iterConnection.send(new Gson().toJson(serverMessage));
                 }
             } else {
                 removeList.add(iterConnection);

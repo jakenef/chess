@@ -1,17 +1,16 @@
 package server.websocket;
 
-import chess.ChessGame;
 import com.google.gson.Gson;
 import dataaccess.DataAccessException;
 import dataaccess.auth.AuthDataAccess;
 import dataaccess.game.GameDataAccess;
 import dataaccess.user.UserDataAccess;
-import exception.ResponseException;
 import model.GameData;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 import websocket.commands.UserGameCommand;
+import websocket.messages.ErrorMessage;
 import websocket.messages.LoadGameMessage;
 import websocket.messages.NotificationMessage;
 
@@ -24,6 +23,7 @@ public class WebSocketHandler {
     private final UserDataAccess userDA;
     private final GameDataAccess gameDA;
     private final AuthDataAccess authDA;
+    private Connection clientConnection;
 
     public WebSocketHandler(UserDataAccess userDA, GameDataAccess gameDA, AuthDataAccess authDA) {
         this.userDA = userDA;
@@ -32,9 +32,11 @@ public class WebSocketHandler {
     }
 
     @OnWebSocketMessage
-    public void onMessage(Session session, String message) {
+    public void onMessage(Session session, String message) throws IOException {
         UserGameCommand command = new Gson().fromJson(message, UserGameCommand.class);
+        this.clientConnection = new Connection(null, session);
         try {
+            this.clientConnection = new Connection(getUsername(command), session);
             switch (command.getCommandType()) {
                 case CONNECT -> {
                     if (isPlayer(command)) {
@@ -45,7 +47,8 @@ public class WebSocketHandler {
                 }
             }
         } catch (DataAccessException | IOException e) {
-            throw new RuntimeException(e);
+            ErrorMessage errorMessage = new ErrorMessage(e.getMessage());
+            clientConnection.send(new Gson().toJson(errorMessage));
         }
     }
 
@@ -55,8 +58,7 @@ public class WebSocketHandler {
         gameConnManager.add(rootClientUsername, session);
 
         LoadGameMessage loadGameMessage = new LoadGameMessage(getGameData(command));
-        Connection clientConn = gameConnManager.get(rootClientUsername);
-        clientConn.send(loadGameMessage.toString());
+        clientConnection.send(new Gson().toJson(loadGameMessage));
 
         NotificationMessage notificationMessage = new NotificationMessage(rootClientUsername +
                 " has connected as " + getPlayerJoinColor(command));
@@ -69,8 +71,7 @@ public class WebSocketHandler {
         gameConnManager.add(rootClientUsername, session);
 
         LoadGameMessage loadGameMessage = new LoadGameMessage(getGameData(command));
-        Connection clientConn = gameConnManager.get(rootClientUsername);
-        clientConn.send(loadGameMessage.toString());
+        clientConnection.send(new Gson().toJson(loadGameMessage));
 
         NotificationMessage notificationMessage = new NotificationMessage(rootClientUsername +
                 " has connected as an observer");
