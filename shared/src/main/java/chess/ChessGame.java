@@ -236,7 +236,8 @@ public class ChessGame {
      */
     public enum TeamColor {
         WHITE,
-        BLACK;
+        BLACK,
+        NONE;
         public TeamColor opposite() {
             return this == BLACK ? WHITE : BLACK;
         }

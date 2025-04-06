@@ -51,11 +51,33 @@ public class WebSocketHandler {
                 }
                 case MAKE_MOVE -> makeMove(makeMoveCommand);
                 case LEAVE -> leave(userCommand);
+                case RESIGN -> resign(userCommand);
             }
         } catch (DataAccessException | IOException | InvalidMoveException e) {
             ErrorMessage errorMessage = new ErrorMessage(e.getMessage());
             clientConnection.send(new Gson().toJson(errorMessage));
         }
+    }
+
+    private void resign(UserGameCommand command) throws DataAccessException, InvalidMoveException, IOException {
+        GameConnectionManager gameConnManager = getGameConnManager(command);
+        String rootClientUsername = getUsername(command.getAuthToken());
+        if (!isPlayer(command)){
+            throw new InvalidMoveException("observer cannot resign");
+        }
+
+        GameData gameData = getGameData(command.getGameID());
+        ChessGame game = gameData.game();
+
+        if(game.getTeamTurn().equals(ChessGame.TeamColor.NONE)){
+            throw new InvalidMoveException("the game is already over.");
+        }
+
+        game.setTeamTurn(ChessGame.TeamColor.NONE);
+        gameDA.updateGame(gameData);
+
+        NotificationMessage notificationMessage = new NotificationMessage(rootClientUsername + " has resigned.");
+        gameConnManager.broadcast(null, notificationMessage);
     }
 
     private void leave(UserGameCommand command) throws DataAccessException, IOException {
@@ -88,7 +110,7 @@ public class WebSocketHandler {
         GameData gameData = getGameData(command.getGameID());
         ChessGame game = gameData.game();
 
-        if(!game.getTeamTurn().toString().equals(getRootClientTeamColor(command))){
+        if(game.getTeamTurn().equals(ChessGame.TeamColor.NONE) || !game.getTeamTurn().toString().equals(getRootClientTeamColor(command))){
             throw new InvalidMoveException("invalid move");
         }
 
