@@ -99,7 +99,7 @@ public class ChessGame {
             }
             teamTurn = movePiece.getTeamColor().opposite();
         }else{
-            throw new InvalidMoveException();
+            throw new InvalidMoveException("invalid move");
         }
     }
 

@@ -65,7 +65,7 @@ public class WebSocketHandler {
 
         if (isPlayer(command)) {
             GameData oldGameData = getGameData(command.getGameID());
-            if (getPlayerJoinColor(command).equals("WHITE")){
+            if (getRootClientTeamColor(command).equals("WHITE")){
                 gameDA.updateGame(new GameData(oldGameData.gameID(), null,
                         oldGameData.blackUsername(), oldGameData.gameName(), oldGameData.game()));
             } else {
@@ -79,16 +79,24 @@ public class WebSocketHandler {
     }
 
     private void makeMove(MakeMoveCommand command) throws DataAccessException, InvalidMoveException, IOException {
+        if (!isPlayer(command)){
+            throw new InvalidMoveException("invalid move");
+        }
         GameConnectionManager gameConnManager = getGameConnManager(command);
         String rootClientUsername = getUsername(command.getAuthToken());
 
         GameData gameData = getGameData(command.getGameID());
         ChessGame game = gameData.game();
+
+        if(!game.getTeamTurn().toString().equals(getRootClientTeamColor(command))){
+            throw new InvalidMoveException("invalid move");
+        }
+
         game.makeMove(command.getMove());
         gameDA.updateGame(gameData);
 
         LoadGameMessage loadGameMessage = new LoadGameMessage(getGameData(command.getGameID()));
-        clientConnection.send(new Gson().toJson(loadGameMessage));
+        gameConnManager.broadcast(null, loadGameMessage);
 
         NotificationMessage notificationMessage = new NotificationMessage(rootClientUsername +
                 " made move: " + command.getMove().toString());
@@ -120,7 +128,7 @@ public class WebSocketHandler {
         clientConnection.send(new Gson().toJson(loadGameMessage));
 
         NotificationMessage notificationMessage = new NotificationMessage(rootClientUsername +
-                " has connected as " + getPlayerJoinColor(command));
+                " has connected as " + getRootClientTeamColor(command));
         gameConnManager.broadcast(rootClientUsername, notificationMessage);
     }
 
@@ -153,7 +161,7 @@ public class WebSocketHandler {
                 || getUsername(command.getAuthToken()).equals(gameData.blackUsername());
     }
 
-    private String getPlayerJoinColor(UserGameCommand command) throws DataAccessException {
+    private String getRootClientTeamColor(UserGameCommand command) throws DataAccessException {
         GameData gameData = gameDA.getGame(command.getGameID());
         if (getUsername(command.getAuthToken()).equals(gameData.whiteUsername())){
             return "WHITE";

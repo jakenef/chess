@@ -51,12 +51,14 @@ public class SQLGameDataAccess implements GameDataAccess{
             throw new DataAccessException("bad request");
         }
         var conn = DatabaseManager.getConnection();
-        var statement = "UPDATE game SET json = ? WHERE gameID = ?";
+        var statement = "UPDATE game SET whiteUsername = ?, blackUsername = ?, gameName = ?, json = ? WHERE gameID = ?";
         try {
             var ps = conn.prepareStatement(statement);
-            var json = new Gson().toJson(gameData.game());
-            ps.setString(1, json);
-            ps.setInt(2, gameData.gameID());
+            ps.setString(1, gameData.whiteUsername());
+            ps.setString(2, gameData.blackUsername());
+            ps.setString(3, gameData.gameName());
+            ps.setString(4, new Gson().toJson(gameData.game()));
+            ps.setInt(5, gameData.gameID());
 
             int affectedRows = ps.executeUpdate();
             if (affectedRows == 0){
