@@ -22,10 +22,15 @@ public class ChessMove {
 
     @Override
     public String toString() {
-        return "\nChessMove{" +
-                "startPosition=" + startPosition +
-                "\n endPosition=" + endPosition +
-                "}";
+        StringBuilder sb = new StringBuilder();
+        sb.append("Move from ").append(startPosition)
+                .append(" to ").append(endPosition);
+
+        if (promotionPiece != null) {
+            sb.append(" promoting to ").append(promotionPiece);
+        }
+
+        return sb.toString();
     }
 
     @Override

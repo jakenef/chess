@@ -50,9 +50,7 @@ public class Repl {
         State previousState = state;
         var result = "";
         while(!result.equals("quit")){
-            if (state != State.GAMEPLAY) {
-                printPrompt();
-            }
+            printPrompt();
             String line = scanner.nextLine();
 
             try{
@@ -137,6 +135,7 @@ public class Repl {
     }
 
     public void printLoadGameMessage(LoadGameMessage loadGameMessage) {
+        this.joinedGameData = loadGameMessage.getGame();
         System.out.println(RESET_TEXT_COLOR + "\n" + PrintBoardHelper.getBoardString(loadGameMessage.getGame(), this));
         printPrompt();
     }

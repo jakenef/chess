@@ -99,7 +99,7 @@ public class WebSocketHandler {
 
     private void makeMove(MakeMoveCommand command) throws DataAccessException, InvalidMoveException, IOException {
         if (!isPlayer(command)){
-            throw new InvalidMoveException("invalid move");
+            throw new InvalidMoveException("you're not playing!");
         }
         GameConnectionManager gameConnManager = getGameConnManager(command);
         String rootClientUsername = getUsername(command.getAuthToken());
@@ -108,7 +108,7 @@ public class WebSocketHandler {
         ChessGame game = gameData.game();
 
         if(game.getTeamTurn().equals(ChessGame.TeamColor.NONE) || !game.getTeamTurn().toString().equals(getRootClientTeamColor(command))){
-            throw new InvalidMoveException("invalid move");
+            throw new InvalidMoveException("its not your turn");
         }
 
         game.makeMove(command.getMove());

@@ -1,8 +1,10 @@
 package websocketfacade;
 
+import chess.ChessMove;
 import com.google.gson.Gson;
 import exception.ResponseException;
 import ui.Repl;
+import websocket.commands.MakeMoveCommand;
 import websocket.commands.UserGameCommand;
 import websocket.messages.ErrorMessage;
 import websocket.messages.LoadGameMessage;
@@ -49,7 +51,6 @@ public class WebSocketFacade extends Endpoint {
 
     @Override
     public void onOpen(Session session, EndpointConfig endpointConfig) {
-        System.out.println("Websocket connected.");
     }
 
     public void connect(String authToken, int gameID) throws ResponseException {
@@ -74,6 +75,15 @@ public class WebSocketFacade extends Endpoint {
         UserGameCommand userGameCommand = new UserGameCommand(UserGameCommand.CommandType.RESIGN, authToken, gameID);
         try {
             session.getBasicRemote().sendText(new Gson().toJson(userGameCommand));
+        } catch (IOException e) {
+            throw new ResponseException(500, e.getMessage());
+        }
+    }
+
+    public void makeMove(String authToken, int gameID, ChessMove move) throws ResponseException {
+        MakeMoveCommand makeMoveCommand = new MakeMoveCommand(authToken, gameID, move);
+        try {
+            session.getBasicRemote().sendText(new Gson().toJson(makeMoveCommand));
         } catch (IOException e) {
             throw new ResponseException(500, e.getMessage());
         }

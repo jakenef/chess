@@ -32,9 +32,6 @@ public class ChessPiece {
         this.type = type;
     }
 
-    /**
-     * The various different chess piece options
-     */
     public enum PieceType {
         KING,
         QUEEN,
@@ -50,6 +47,15 @@ public class ChessPiece {
                 "pieceColor=" + pieceColor +
                 ", type=" + type +
                 '}';
+    }
+
+    public static PieceType fromString(String pieceString) {
+        if (pieceString == null) return null;
+        try {
+            return PieceType.valueOf(pieceString.trim().toUpperCase());
+        } catch (IllegalArgumentException e) {
+            return null;
+        }
     }
 
     @Override
