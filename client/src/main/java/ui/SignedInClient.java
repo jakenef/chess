@@ -110,7 +110,7 @@ public class SignedInClient implements ClientInterface{
 
         repl.setWs();
         WebSocketFacade ws = repl.getWs();
-        ws.connectAsPlayer(repl.getAuthToken(), game.gameID());
+        ws.connect(repl.getAuthToken(), game.gameID());
 
         return "Successfully joined game: " + game.gameName();
     }
@@ -134,6 +134,11 @@ public class SignedInClient implements ClientInterface{
         repl.setJoinedGameData(game);
         repl.setJoinedAsTeamColor(ChessGame.TeamColor.WHITE);
         repl.setState(State.GAMEPLAY);
+
+        repl.setWs();
+        WebSocketFacade ws = repl.getWs();
+        ws.connect(repl.getAuthToken(), game.gameID());
+
         return "observing game ID: " + (index + 1);
     }
 

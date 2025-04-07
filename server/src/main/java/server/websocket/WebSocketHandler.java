@@ -6,7 +6,6 @@ import com.google.gson.Gson;
 import dataaccess.DataAccessException;
 import dataaccess.auth.AuthDataAccess;
 import dataaccess.game.GameDataAccess;
-import dataaccess.user.UserDataAccess;
 import model.GameData;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
@@ -23,13 +22,11 @@ import java.util.concurrent.ConcurrentHashMap;
 @WebSocket
 public class WebSocketHandler {
     private final ConcurrentHashMap<Integer, GameConnectionManager> gameCMList = new ConcurrentHashMap<>();
-    private final UserDataAccess userDA;
     private final GameDataAccess gameDA;
     private final AuthDataAccess authDA;
     private Connection clientConnection;
 
-    public WebSocketHandler(UserDataAccess userDA, GameDataAccess gameDA, AuthDataAccess authDA) {
-        this.userDA = userDA;
+    public WebSocketHandler(GameDataAccess gameDA, AuthDataAccess authDA) {
         this.gameDA = gameDA;
         this.authDA = authDA;
     }
