@@ -1,12 +1,13 @@
 package websocketfacade;
 
-import chess.ChessGame;
 import com.google.gson.Gson;
 import exception.ResponseException;
-import model.GameData;
 import ui.Repl;
 import websocket.commands.UserGameCommand;
+import websocket.messages.ErrorMessage;
+import websocket.messages.LoadGameMessage;
 import websocket.messages.NotificationMessage;
+import websocket.messages.ServerMessage;
 
 import javax.websocket.*;
 import java.io.IOException;
@@ -15,13 +16,13 @@ import java.net.URISyntaxException;
 
 public class WebSocketFacade extends Endpoint {
     Session session;
-    Repl notificationRepl;
+    Repl repl;
 
-    public WebSocketFacade(String url, Repl notificationRepl) throws ResponseException {
+    public WebSocketFacade(String url, Repl repl) throws ResponseException {
         try {
             url = url.replace("http", "ws");
             URI socketURI = new URI(url + "/ws");
-            this.notificationRepl = notificationRepl;
+            this.repl = repl;
 
             WebSocketContainer container = ContainerProvider.getWebSocketContainer();
             this.session = container.connectToServer(this, socketURI);
@@ -29,8 +30,15 @@ public class WebSocketFacade extends Endpoint {
             this.session.addMessageHandler(new MessageHandler.Whole<String>() {
                 @Override
                 public void onMessage(String message) {
+                    ServerMessage serverMessage = new Gson().fromJson(message, ServerMessage.class);
                     NotificationMessage notificationMessage = new Gson().fromJson(message, NotificationMessage.class);
-                    notificationRepl.notify(notificationMessage);
+                    ErrorMessage errorMessage = new Gson().fromJson(message, ErrorMessage.class);
+                    LoadGameMessage loadGameMessage = new Gson().fromJson(message, LoadGameMessage.class);
+                    switch (serverMessage.getServerMessageType()){
+                        case NOTIFICATION -> repl.printNotification(notificationMessage);
+                        case ERROR -> repl.printError(errorMessage);
+                        case LOAD_GAME -> repl.printLoadGameMessage(loadGameMessage);
+                    }
                 }
             });
 

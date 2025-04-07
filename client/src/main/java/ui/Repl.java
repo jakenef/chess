@@ -4,6 +4,8 @@ import chess.ChessGame;
 import exception.ResponseException;
 import model.GameData;
 import serverfacade.ServerFacade;
+import websocket.messages.ErrorMessage;
+import websocket.messages.LoadGameMessage;
 import websocket.messages.NotificationMessage;
 import websocketfacade.WebSocketFacade;
 
@@ -38,7 +40,8 @@ public class Repl {
             case SIGNED_IN -> client = new SignedInClient(this);
             case GAMEPLAY -> {
                 client = new GameplayClient(this);
-                System.out.println(RESET_TEXT_COLOR + ((GameplayClient) client).printBoard());
+                System.out.println(RESET_TEXT_COLOR +
+                        PrintBoardHelper.getBoardString(this.getJoinedGameData(), this));
             }
         }
     }
@@ -125,8 +128,18 @@ public class Repl {
         System.out.print("\n" + SET_TEXT_COLOR_YELLOW + state + ">>> " + SET_TEXT_COLOR_GREEN);
     }
 
-    public void notify(NotificationMessage notification) {
-        System.out.println(SET_TEXT_COLOR_RED + notification.getMessage());
+    public void printNotification(NotificationMessage notification) {
+        System.out.println(SET_TEXT_COLOR_MAGENTA + notification.getMessage());
+        printPrompt();
+    }
+
+    public void printError(ErrorMessage error) {
+        System.out.println(SET_TEXT_COLOR_RED + error.getErrorMessage());
+        printPrompt();
+    }
+
+    public void printLoadGameMessage(LoadGameMessage loadGameMessage) {
+        System.out.println(RESET_TEXT_COLOR + loadGameMessage.getGame());
         printPrompt();
     }
 }

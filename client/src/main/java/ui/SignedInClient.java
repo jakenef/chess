@@ -7,7 +7,6 @@ import model.request.CreateGameRequest;
 import model.request.JoinGameRequest;
 import model.request.ListGameRequest;
 import model.request.LogoutRequest;
-import model.result.CreateGameResult;
 import model.result.ListGameResult;
 import websocketfacade.WebSocketFacade;
 
@@ -47,7 +46,7 @@ public class SignedInClient implements ClientInterface{
         if (params.length != 1){
             throw new ResponseException(400, "Expected: create <GAMENAME>");
         }
-        CreateGameResult result = repl.getServer().createGame(new CreateGameRequest(repl.getAuthToken(), params[0]));
+        repl.getServer().createGame(new CreateGameRequest(repl.getAuthToken(), params[0]));
         return "Successfully created your game.";
     }
 
