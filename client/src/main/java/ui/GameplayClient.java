@@ -21,6 +21,7 @@ public class GameplayClient implements ClientInterface{
             return switch(cmd) {
                 case "leave" -> leave();
                 case "print" -> PrintBoardHelper.getBoardString(repl.getJoinedGameData(), repl);
+                case "resign" -> resign();
                 case "quit" -> "quit";
                 default -> help();
             };
@@ -29,11 +30,18 @@ public class GameplayClient implements ClientInterface{
         }
     }
 
+    public String resign() throws ResponseException {
+        WebSocketFacade ws = repl.getWs();
+        ws.resign(repl.getAuthToken(), repl.getJoinedGameData().gameID());
+        return "";
+    }
+
     public String leave() throws ResponseException {
+        repl.setState(State.SIGNED_IN);
+
         WebSocketFacade ws = repl.getWs();
         ws.leave(repl.getAuthToken(), repl.getJoinedGameData().gameID());
 
-        repl.setState(State.SIGNED_IN);
         repl.setJoinedGameData(null);
         repl.setJoinedAsTeamColor(null);
         return "Successfully left gameplay.";

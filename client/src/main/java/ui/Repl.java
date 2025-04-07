@@ -50,7 +50,9 @@ public class Repl {
         State previousState = state;
         var result = "";
         while(!result.equals("quit")){
-            printPrompt();
+            if (state != State.GAMEPLAY) {
+                printPrompt();
+            }
             String line = scanner.nextLine();
 
             try{
