@@ -38,11 +38,7 @@ public class Repl {
         switch (newState){
             case SIGNED_OUT -> client = new SignedOutClient(this);
             case SIGNED_IN -> client = new SignedInClient(this);
-            case GAMEPLAY -> {
-                client = new GameplayClient(this);
-                System.out.println(RESET_TEXT_COLOR +
-                        PrintBoardHelper.getBoardString(this.getJoinedGameData(), this));
-            }
+            case GAMEPLAY -> client = new GameplayClient(this);
         }
     }
 
@@ -61,7 +57,7 @@ public class Repl {
                 result = client.eval(line);
                 String formatResult = formatResult(result);
                 System.out.print(SET_TEXT_COLOR_BLUE + formatResult);
-                if (state != previousState) {
+                if (state != previousState && state != State.GAMEPLAY) {
                     System.out.print("\n" + SET_TEXT_COLOR_BLUE + formatResult(client.help()));
                     previousState = state;
                 }
@@ -96,7 +92,7 @@ public class Repl {
         return ws;
     }
 
-    public void setWs() throws ResponseException {
+    public void createWebSocket() throws ResponseException {
         this.ws = new WebSocketFacade(serverURL, this);
     }
 
@@ -139,7 +135,7 @@ public class Repl {
     }
 
     public void printLoadGameMessage(LoadGameMessage loadGameMessage) {
-        System.out.println(RESET_TEXT_COLOR + loadGameMessage.getGame());
+        System.out.println(RESET_TEXT_COLOR + "\n" + PrintBoardHelper.getBoardString(loadGameMessage.getGame(), this));
         printPrompt();
     }
 }

@@ -1,6 +1,7 @@
 package ui;
 
 import exception.ResponseException;
+import websocketfacade.WebSocketFacade;
 
 import java.util.Arrays;
 
@@ -17,9 +18,6 @@ public class GameplayClient implements ClientInterface{
             var tokens = input.toLowerCase().split(" ");
             var cmd = (tokens.length > 0) ? tokens[0] : "help";
             var params = Arrays.copyOfRange(tokens, 1, tokens.length);
-            if (false){
-                throw new ResponseException(400, "Stubbed out for next phase");
-            }
             return switch(cmd) {
                 case "leave" -> leave();
                 case "print" -> PrintBoardHelper.getBoardString(repl.getJoinedGameData(), repl);
@@ -31,8 +29,13 @@ public class GameplayClient implements ClientInterface{
         }
     }
 
-    public String leave(){
+    public String leave() throws ResponseException {
+        WebSocketFacade ws = repl.getWs();
+        ws.leave(repl.getAuthToken(), repl.getJoinedGameData().gameID());
+
         repl.setState(State.SIGNED_IN);
+        repl.setJoinedGameData(null);
+        repl.setJoinedAsTeamColor(null);
         return "Successfully left gameplay.";
     }
 
