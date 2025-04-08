@@ -22,15 +22,8 @@ public class ChessMove {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("Move from ").append(startPosition)
-                .append(" to ").append(endPosition);
-
-        if (promotionPiece != null) {
-            sb.append(" promoting to ").append(promotionPiece);
-        }
-
-        return sb.toString();
+        return "move from " + startPosition.toString() + " to " + endPosition.toString() +
+                (promotionPiece != null ? " promoting to " + promotionPiece.name().toLowerCase() : "");
     }
 
     @Override

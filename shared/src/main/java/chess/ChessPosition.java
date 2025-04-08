@@ -24,9 +24,8 @@ public class ChessPosition {
 
     @Override
     public String toString() {
-        return "[" + col +
-                ", " + row +
-                "]";
+        char file = (char) ('a' + col - 1);
+        return file + String.valueOf(row);
     }
 
     @Override

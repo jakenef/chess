@@ -136,8 +136,13 @@ public class WebSocketHandler {
         GameData gameData = getGameData(command.getGameID());
         ChessGame game = gameData.game();
 
-        if(game.getTeamTurn().equals(ChessGame.TeamColor.NONE) || !game.getTeamTurn().toString().equals(getRootClientTeamColor(command))){
+        if(!game.getTeamTurn().toString().equals(getRootClientTeamColor(command))){
             throw new InvalidMoveException("its not your turn");
+        }
+        if (game.getTeamTurn().equals(ChessGame.TeamColor.NONE) ||
+            game.isInCheckmate(ChessGame.TeamColor.WHITE) || game.isInCheckmate(ChessGame.TeamColor.BLACK) ||
+            game.isInStalemate(ChessGame.TeamColor.WHITE) || game.isInStalemate(ChessGame.TeamColor.BLACK)) {
+            throw new InvalidMoveException("the game is over");
         }
 
         game.makeMove(command.getMove());
@@ -146,21 +151,21 @@ public class WebSocketHandler {
         LoadGameMessage loadGameMessage = new LoadGameMessage(getGameData(command.getGameID()));
         gameConnManager.broadcast(null, loadGameMessage);
 
-        NotificationMessage notificationMessage = new NotificationMessage(rootClientUsername +
-                " made move: " + command.getMove().toString());
+        NotificationMessage notificationMessage = new NotificationMessage(rootClientUsername + " made "
+                + command.getMove().toString());
         gameConnManager.broadcast(rootClientUsername, notificationMessage);
 
         NotificationMessage statusNotificationMessage = null;
-        if (game.isInCheck(ChessGame.TeamColor.WHITE)){
+        if (game.isInCheckmate(ChessGame.TeamColor.WHITE)) {
+            statusNotificationMessage = new NotificationMessage(gameData.whiteUsername() + " is in checkmate!");
+        } else if (game.isInCheckmate(ChessGame.TeamColor.BLACK)) {
+            statusNotificationMessage = new NotificationMessage(gameData.blackUsername() + " is in checkmate!");
+        } else if (game.isInStalemate(ChessGame.TeamColor.WHITE) || game.isInStalemate(ChessGame.TeamColor.BLACK)) {
+            statusNotificationMessage = new NotificationMessage("Stalemate...");
+        } else if (game.isInCheck(ChessGame.TeamColor.WHITE)) {
             statusNotificationMessage = new NotificationMessage(gameData.whiteUsername() + " is in check!");
         } else if (game.isInCheck(ChessGame.TeamColor.BLACK)) {
             statusNotificationMessage = new NotificationMessage(gameData.blackUsername() + " is in check!");
-        } else if (game.isInCheckmate(ChessGame.TeamColor.WHITE)){
-            statusNotificationMessage = new NotificationMessage(gameData.whiteUsername() + " is in checkmate!");
-        } else if (game.isInCheckmate(ChessGame.TeamColor.BLACK)){
-            statusNotificationMessage = new NotificationMessage(gameData.blackUsername() + " is in checkmate!");
-        } else if (game.isInStalemate(ChessGame.TeamColor.WHITE) || game.isInStalemate(ChessGame.TeamColor.BLACK)){
-            statusNotificationMessage = new NotificationMessage("Stalemate...");
         }
         if (statusNotificationMessage != null) {
             gameConnManager.broadcast(null, statusNotificationMessage);
