@@ -6,7 +6,28 @@ import java.util.Properties;
 import static java.sql.Statement.RETURN_GENERATED_KEYS;
 import static java.sql.Types.NULL;
 
-
+/**
+ * The `DatabaseManager` class provides methods to manage the database, including creating the database,
+ * establishing connections, executing updates, and configuring tables.
+ *
+ * <p>This class loads database configuration from a `db.properties` file and provides utility methods
+ * for interacting with the database. It supports creating the database if it does not exist,
+ * configuring tables, and clearing all tables.</p>
+ *
+ * <p>Example usage:</p>
+ * <pre>
+ * {@code
+ * // Create and configure the database
+ * DatabaseManager.configureDatabase();
+ *
+ * // Execute an update statement
+ * int generatedId = DatabaseManager.executeUpdate("INSERT INTO user (username, password) VALUES (?, ?)", "user1", "password1");
+ *
+ * // Clear all tables
+ * DatabaseManager.clearAllTables();
+ * }
+ * </pre>
+ */
 public class DatabaseManager {
     private static final String DATABASE_NAME;
     private static final String USER;
@@ -74,6 +95,14 @@ public class DatabaseManager {
         }
     }
 
+    /**
+         * Executes an update statement (such as INSERT, UPDATE, or DELETE) with the specified parameters.
+         *
+         * @param statement The SQL statement to execute.
+         * @param params The parameters to set in the SQL statement.
+         * @return The generated key for the inserted row, or 0 if no key was generated.
+         * @throws DataAccessException If an error occurs while executing the update.
+         */
     public static int executeUpdate(String statement, Object... params) throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
             try (var ps = conn.prepareStatement(statement, RETURN_GENERATED_KEYS)) {

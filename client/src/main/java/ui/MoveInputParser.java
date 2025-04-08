@@ -2,6 +2,10 @@ package ui;
 
 import chess.ChessPosition;
 
+/**
+ * The `MoveInputParser` class provides a method to parse a chess move input string
+ * and convert it into a `ChessPosition` object.
+ */
 public class MoveInputParser {
     public static ChessPosition parsePosition(String input) throws IllegalArgumentException {
         if (input == null || input.length() != 2) {

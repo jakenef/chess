@@ -10,6 +10,13 @@ import static ui.EscapeSequences.*;
 import static ui.EscapeSequences.RESET;
 
 public class PrintBoardHelper {
+    /**
+     * Generates a string representation of the chess board from the perspective of the joined team color.
+     *
+     * @param gameData The game data containing the current state of the chess game.
+     * @param repl The REPL instance to get the perspective of the joined team color.
+     * @return A string representation of the chess board.
+     */
     public static String getBoardString(GameData gameData, Repl repl) {
         ChessBoard board = gameData.game().getBoard();
         StringBuilder boardString = new StringBuilder();

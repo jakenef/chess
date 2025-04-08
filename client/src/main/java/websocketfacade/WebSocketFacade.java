@@ -16,10 +16,22 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+/**
+ * The `WebSocketFacade` class is responsible for managing the WebSocket connection
+ * and communication between the client and the server. It handles sending commands
+ * and receiving messages related to the chess game.
+ */
 public class WebSocketFacade extends Endpoint {
     Session session;
     Repl repl;
 
+    /**
+         * Constructs a new `WebSocketFacade` instance and establishes a WebSocket connection to the specified URL.
+         *
+         * @param url  the URL of the WebSocket server
+         * @param repl the `Repl` instance to handle received messages
+         * @throws ResponseException if an error occurs while establishing the WebSocket connection
+         */
     public WebSocketFacade(String url, Repl repl) throws ResponseException {
         try {
             url = url.replace("http", "ws");

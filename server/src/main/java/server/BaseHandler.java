@@ -7,6 +7,12 @@ import model.utils.RecordUtils;
 import spark.Request;
 import spark.Response;
 
+/**
+ * Abstract base handler class for processing HTTP requests and responses.
+ *
+ * @param <T> the type of the request object
+ * @param <R> the type of the response object
+ */
 public abstract class BaseHandler<T, R> {
     private final Gson gson = new Gson();
 
@@ -14,6 +20,13 @@ public abstract class BaseHandler<T, R> {
 
     protected abstract T parseRequest(Request req);
 
+    /**
+     * Handles the HTTP request and response.
+     *
+     * @param req the HTTP request
+     * @param res the HTTP response
+     * @return the response object in JSON format
+     */
     public Object handle(Request req, Response res){
         T parsedReq = parseRequest(req);
 

@@ -8,6 +8,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * Manages WebSocket connections for the game server.
+ * This class maintains a collection of active WebSocket connections, allowing
+ * for adding, removing, retrieving, and broadcasting messages to connections.
+ */
 public class GameConnectionManager {
     public final ConcurrentHashMap<String, Connection> connections = new ConcurrentHashMap<>();
 

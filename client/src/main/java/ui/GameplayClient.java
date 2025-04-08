@@ -9,6 +9,11 @@ import websocketfacade.WebSocketFacade;
 import java.util.Arrays;
 import java.util.List;
 
+
+/**
+ * The `GameplayClient` class implements the `ClientInterface` and handles the gameplay state of the REPL.
+ * It processes user commands related to gameplay, such as making moves, resigning, and leaving the game.
+ */
 public class GameplayClient implements ClientInterface{
     private final Repl repl;
 
@@ -16,6 +21,22 @@ public class GameplayClient implements ClientInterface{
         this.repl = repl;
     }
 
+    /**
+         * Evaluates the user input command and executes the corresponding action.
+         * Supported commands include:
+         * <ul>
+         *   <li>leave - Leave the current game and return to SIGNED_IN mode</li>
+         *   <li>print - Print the current state of the chess board</li>
+         *   <li>resign - Resign from the current game</li>
+         *   <li>move - Make a move in the current game</li>
+         *   <li>highlight - Highlight legal moves for a chosen piece</li>
+         *   <li>quit - Quit the REPL</li>
+         *   <li>help - Display the help message</li>
+         * </ul>
+         *
+         * @param input the user input command
+         * @return the result of the command execution
+         */
     @Override
     public String eval(String input) {
         try {
@@ -27,6 +48,7 @@ public class GameplayClient implements ClientInterface{
                 case "print" -> PrintBoardHelper.getBoardString(repl.getJoinedGameData(), repl);
                 case "resign" -> resign();
                 case "move" -> move(params);
+                case "highlight" -> highlight(params);
                 case "quit" -> "quit";
                 default -> help();
             };
@@ -35,6 +57,24 @@ public class GameplayClient implements ClientInterface{
         }
     }
 
+    public String highlight(String... params) {
+        return "";
+    }
+
+
+    /**
+     * Executes a move command in the current game.
+     * The command expects two or three parameters:
+     * <ul>
+     *   <li>from - the starting position of the piece (e.g., a3)</li>
+     *   <li>to - the ending position of the piece (e.g., a4)</li>
+     *   <li>promotionPiece - optional, the piece to promote to if applicable (e.g., QUEEN)</li>
+     * </ul>
+     *
+     * @param params the parameters for the move command
+     * @return an empty string if the move is successful, or an error message if the move fails
+     * @throws ResponseException if the move command is invalid or fails
+     */
     public String move(String... params) throws ResponseException {
         if(params.length != 2 && params.length != 3) {
             throw new ResponseException(400, "Expected: move <a-h, 1-8> <a-h, 1-8> <promotionPiece> (ex. move a3 a4)");

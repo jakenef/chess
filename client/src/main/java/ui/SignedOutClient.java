@@ -8,6 +8,11 @@ import model.result.RegisterResult;
 
 import java.util.Arrays;
 
+/**
+ * The `SignedOutClient` class implements the `ClientInterface` and provides methods
+ * to handle various client operations such as registering, logging in, and quitting.
+ * It is used when the client is in a signed-out state.
+ */
 public class SignedOutClient implements ClientInterface{
     private final Repl repl;
 
@@ -15,6 +20,12 @@ public class SignedOutClient implements ClientInterface{
         this.repl = repl;
     }
 
+    /**
+         * Evaluates the given input command and executes the corresponding action.
+         *
+         * @param input The input command to evaluate.
+         * @return The result of the executed command.
+         */
     @Override
     public String eval(String input) {
         try {
@@ -32,6 +43,13 @@ public class SignedOutClient implements ClientInterface{
         }
     }
 
+    /**
+         * Registers a new user with the specified username, password, and email.
+         *
+         * @param params The parameters for the register command. Expected format: [USERNAME, PASSWORD, EMAIL].
+         * @return A message indicating the result of the registration.
+         * @throws ResponseException If the parameters are invalid or the registration fails.
+         */
     public String register(String... params) throws ResponseException {
         if (params.length != 3){
             throw new ResponseException(400, "Expected: register <USERNAME> <PASSWORD> <EMAIL>");
@@ -44,6 +62,13 @@ public class SignedOutClient implements ClientInterface{
         return "Successfully registered user: " + result.username();
     }
 
+    /**
+     * Logs in a user with the specified username and password.
+     *
+     * @param params The parameters for the login command. Expected format: [USERNAME, PASSWORD].
+     * @return A message indicating the result of the login.
+     * @throws ResponseException If the parameters are invalid or the login fails.
+     */
     public String login(String... params) throws ResponseException {
         if (params.length != 2){
             throw new ResponseException(400, "Expected: login <USERNAME> <PASSWORD>");

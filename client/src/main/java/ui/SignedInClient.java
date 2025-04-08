@@ -14,6 +14,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * The `SignedInClient` class implements the `ClientInterface` and provides methods
+ * to handle various client operations such as creating, listing, joining, and observing games,
+ * as well as logging out.
+ */
 public class SignedInClient implements ClientInterface{
     private final Repl repl;
     private ArrayList<GameData> gameList = null;
@@ -22,6 +27,12 @@ public class SignedInClient implements ClientInterface{
         this.repl = repl;
     }
 
+    /**
+         * Evaluates the given input command and executes the corresponding action.
+         *
+         * @param input The input command to evaluate.
+         * @return The result of the executed command.
+         */
     @Override
     public String eval(String input) {
         try {
@@ -82,6 +93,13 @@ public class SignedInClient implements ClientInterface{
         return "All Games: \n" + formatGameList(result.games());
     }
 
+    /**
+         * Joins a game with the specified ID and team color.
+         *
+         * @param params The parameters for the join command. Expected format: [ID, WHITE/BLACK].
+         * @return A message indicating the result of the join operation.
+         * @throws ResponseException If the parameters are invalid or the game cannot be joined.
+         */
     public String join(String... params) throws ResponseException {
         if (params.length != 2){
             throw new ResponseException(400, "Expected: join <ID> [WHITE/BLACK]");
@@ -114,6 +132,13 @@ public class SignedInClient implements ClientInterface{
         return "Successfully joined game: " + game.gameName();
     }
 
+    /**
+         * Observes a game with the specified ID.
+         *
+         * @param params The parameters for the observe command. Expected format: [ID].
+         * @return A message indicating the result of the observe operation.
+         * @throws ResponseException If the parameters are invalid or the game cannot be observed.
+         */
     public String observe(String... params) throws ResponseException {
         if (params.length != 1){
             throw new ResponseException(400, "Expected: observe <ID>");

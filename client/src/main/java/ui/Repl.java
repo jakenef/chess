@@ -15,6 +15,10 @@ import java.util.stream.Collectors;
 
 import static ui.EscapeSequences.*;
 
+/**
+ * The `Repl` class represents a Read-Eval-Print Loop (REPL) for a chess client.
+ * It handles user input, evaluates commands, and prints the results.
+ */
 public class Repl {
     private ClientInterface client;
     private final ServerFacade server;
@@ -42,6 +46,12 @@ public class Repl {
         }
     }
 
+    /**
+         * Starts the Read-Eval-Print Loop (REPL) for the chess client.
+         * This method displays a welcome message, prints the help message,
+         * and continuously reads user input, evaluates commands, and prints the results.
+         * The loop terminates when the user inputs the "quit" command.
+         */
     public void run(){
         System.out.println("♕ Welcome to my CS240 Chess Client: ");
         System.out.println(client.help());

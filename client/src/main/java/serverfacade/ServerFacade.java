@@ -51,7 +51,20 @@ public class ServerFacade {
         return this.makeRequest("PUT", path, request, JoinGameResult.class, request.authToken());
     }
 
-    private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass, String authToken) throws ResponseException {
+    /**
+         * Makes an HTTP request to the server with the specified method, path, request body, and authentication token.
+         *
+         * @param method The HTTP method to use (e.g., "GET", "POST", "PUT", "DELETE").
+         * @param path The path of the endpoint to send the request to.
+         * @param request The request body to send, or null if no body is needed.
+         * @param responseClass The class of the expected response.
+         * @param authToken The authentication token to include in the request headers, or null if no token is needed.
+         * @param <T> The type of the expected response.
+         * @return The response from the server, deserialized into an instance of the specified response class.
+         * @throws ResponseException If the request fails or the server returns an error response.
+         */
+    private <T> T makeRequest(String method, String path, Object request,
+                              Class<T> responseClass, String authToken) throws ResponseException {
         try {
             URL url = (new URI(serverURL + path)).toURL();
             HttpURLConnection http = (HttpURLConnection) url.openConnection();

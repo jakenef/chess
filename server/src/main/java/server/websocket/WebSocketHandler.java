@@ -19,6 +19,16 @@ import websocket.messages.NotificationMessage;
 import java.io.IOException;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * Handles WebSocket connections and messages for the game server.
+ * This class manages the lifecycle of WebSocket connections, processes incoming messages,
+ * and interacts with the game data and authentication data access objects.
+ * Responsibilities include:
+ * - Managing WebSocket connections for players and observers.
+ * - Processing various game-related commands such as connecting, making moves, leaving, and resigning.
+ * - Broadcasting messages to connected clients.
+ * - Handling errors and sending appropriate error messages to clients.
+ */
 @WebSocket
 public class WebSocketHandler {
     private final ConcurrentHashMap<Integer, GameConnectionManager> gameCMList = new ConcurrentHashMap<>();
@@ -31,6 +41,15 @@ public class WebSocketHandler {
         this.authDA = authDA;
     }
 
+    /**
+     * Handles incoming WebSocket messages from clients.
+     * This method processes the received message, determines the type of command,
+     * and delegates the command to the appropriate handler method.
+     *
+     * @param session the WebSocket session associated with the client
+     * @param message the message received from the client
+     * @throws IOException if an I/O error occurs while processing the message
+     */
     @OnWebSocketMessage
     public void onMessage(Session session, String message) throws IOException {
         UserGameCommand userCommand = new Gson().fromJson(message, UserGameCommand.class);
@@ -97,6 +116,16 @@ public class WebSocketHandler {
         gameConnManager.broadcast(rootClientUsername, notificationMessage);
     }
 
+    /**
+     * Processes a move command from a player.
+     * This method validates the move, updates the game state, and broadcasts the updated game state
+     * and notifications to all connected clients.
+     *
+     * @param command the command containing the move details
+     * @throws DataAccessException if there is an error accessing the game data
+     * @throws InvalidMoveException if the move is invalid or the player is not allowed to make the move
+     * @throws IOException if an I/O error occurs while sending messages to clients
+     */
     private void makeMove(MakeMoveCommand command) throws DataAccessException, InvalidMoveException, IOException {
         if (!isPlayer(command)){
             throw new InvalidMoveException("you're not playing!");
