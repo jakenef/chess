@@ -57,7 +57,6 @@ public class SignedOutClient implements ClientInterface{
         RegisterRequest request = new RegisterRequest(params[0], params[1], params[2]);
         RegisterResult result = repl.getServer().register(request);
         repl.setAuthToken(result.authToken());
-        repl.setUsername(result.username());
         repl.setState(State.SIGNED_IN);
         return "Successfully registered user: " + result.username();
     }

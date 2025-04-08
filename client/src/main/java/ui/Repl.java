@@ -26,7 +26,6 @@ public class Repl {
     private WebSocketFacade ws;
     private State state;
     private String authToken = null;
-    private String username = null;
     private GameData joinedGameData;
     private ChessGame.TeamColor joinedAsTeamColor;
 
@@ -94,14 +93,6 @@ public class Repl {
 
     public ServerFacade getServer(){
         return this.server;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
     }
 
     public WebSocketFacade getWs() {
