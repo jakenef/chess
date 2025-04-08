@@ -58,6 +58,7 @@ public class Repl {
 
         Scanner scanner = new Scanner(System.in);
         State previousState = state;
+        String previousCommand = "";
         var result = "";
         while(!result.equals("quit")){
             printPrompt();
@@ -66,7 +67,11 @@ public class Repl {
             try{
                 result = client.eval(line);
                 String formatResult = formatResult(result);
-                System.out.print(SET_TEXT_COLOR_BLUE + formatResult);
+                if (!previousCommand.contains("highlight") && !previousCommand.contains("print")) {
+                    System.out.print(SET_TEXT_COLOR_BLUE + formatResult);
+                } else {
+                    System.out.print(formatResult);
+                }
                 if (state != previousState && state != State.GAMEPLAY) {
                     System.out.print("\n" + SET_TEXT_COLOR_BLUE + formatResult(client.help()));
                     previousState = state;
@@ -76,6 +81,7 @@ public class Repl {
                 var msg = e.toString();
                 System.out.print(msg);
             }
+            previousCommand = line;
         }
         System.out.println();
     }
@@ -146,7 +152,8 @@ public class Repl {
 
     public void printLoadGameMessage(LoadGameMessage loadGameMessage) {
         this.joinedGameData = loadGameMessage.getGame();
-        System.out.println(RESET_TEXT_COLOR + "\n" + PrintBoardHelper.getBoardString(loadGameMessage.getGame(), this));
+        System.out.println(RESET_TEXT_COLOR + "\n" +
+                PrintBoardHelper.getBoardString(loadGameMessage.getGame(), this.getJoinedAsTeamColor()));
         printPrompt();
     }
 }

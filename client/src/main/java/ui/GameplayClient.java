@@ -4,9 +4,11 @@ import chess.ChessMove;
 import chess.ChessPiece;
 import chess.ChessPosition;
 import exception.ResponseException;
+import model.GameData;
 import websocketfacade.WebSocketFacade;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 
@@ -45,7 +47,7 @@ public class GameplayClient implements ClientInterface{
             var params = Arrays.copyOfRange(tokens, 1, tokens.length);
             return switch(cmd) {
                 case "leave" -> leave();
-                case "print" -> PrintBoardHelper.getBoardString(repl.getJoinedGameData(), repl);
+                case "print" -> PrintBoardHelper.getBoardString(repl.getJoinedGameData(), repl.getJoinedAsTeamColor());
                 case "resign" -> resign();
                 case "move" -> move(params);
                 case "highlight" -> highlight(params);
@@ -57,10 +59,20 @@ public class GameplayClient implements ClientInterface{
         }
     }
 
-    public String highlight(String... params) {
-        return "";
+    public String highlight(String... params) throws ResponseException {
+        if (params.length != 1){
+            throw new ResponseException(400, "Expected: highlight <a-h, 1-8> (ex. highlight a2)");
+        }
+        ChessPosition position;
+        try {
+            position = MoveInputParser.parsePosition(params[0]);
+        } catch (IllegalArgumentException e) {
+            throw new ResponseException(400, "Expected: highlight <a-h, 1-8> (ex. highlight a2)");
+        }
+        GameData joinedGameData = repl.getJoinedGameData();
+        Collection<ChessMove> possibleMoves = joinedGameData.game().validMoves(position);
+        return PrintBoardHelper.getPossibleMovesBoardString(joinedGameData, repl.getJoinedAsTeamColor(), possibleMoves);
     }
-
 
     /**
      * Executes a move command in the current game.
