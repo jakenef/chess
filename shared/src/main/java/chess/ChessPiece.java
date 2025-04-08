@@ -50,7 +50,9 @@ public class ChessPiece {
     }
 
     public static PieceType fromString(String pieceString) {
-        if (pieceString == null) return null;
+        if (pieceString == null) {
+            return null;
+        }
         try {
             return PieceType.valueOf(pieceString.trim().toUpperCase());
         } catch (IllegalArgumentException e) {
