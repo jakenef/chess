@@ -11,7 +11,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-
 /**
  * The `GameplayClient` class implements the `ClientInterface` and handles the gameplay state of the REPL.
  * It processes user commands related to gameplay, such as making moves, resigning, and leaving the game.

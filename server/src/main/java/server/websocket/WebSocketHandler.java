@@ -136,13 +136,13 @@ public class WebSocketHandler {
         GameData gameData = getGameData(command.getGameID());
         ChessGame game = gameData.game();
 
-        if(!game.getTeamTurn().toString().equals(getRootClientTeamColor(command))){
-            throw new InvalidMoveException("its not your turn");
-        }
         if (game.getTeamTurn().equals(ChessGame.TeamColor.NONE) ||
             game.isInCheckmate(ChessGame.TeamColor.WHITE) || game.isInCheckmate(ChessGame.TeamColor.BLACK) ||
             game.isInStalemate(ChessGame.TeamColor.WHITE) || game.isInStalemate(ChessGame.TeamColor.BLACK)) {
             throw new InvalidMoveException("the game is over");
+        }
+        if(!game.getTeamTurn().toString().equals(getRootClientTeamColor(command))){
+            throw new InvalidMoveException("its not your turn");
         }
 
         game.makeMove(command.getMove());
