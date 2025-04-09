@@ -2,6 +2,15 @@
 
 This project demonstrates mastery of proper software design, client/server architecture, networking using HTTP and WebSocket, database persistence, unit testing, serialization, and security.
 
+## Screenshots
+
+<img width="1440" alt="Screenshot 2025-04-08 at 9 52 32 AM" src="https://github.com/user-attachments/assets/2a46a146-b71b-44c5-a83a-37d110944372" />
+
+<img width="1440" alt="Screenshot 2025-04-08 at 9 53 58 AM" src="https://github.com/user-attachments/assets/214f22c7-c636-4e3d-9579-0e1294ae50aa" />
+
+<img width="1440" alt="Screenshot 2025-04-08 at 1 29 56 PM" src="https://github.com/user-attachments/assets/3e9f9e4f-82f0-404e-b99d-18f2abbd001c" />
+
+
 ## 10k Architecture Overview
 
 The application implements a multiplayer chess server and a command line chess client.
